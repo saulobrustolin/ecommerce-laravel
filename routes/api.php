@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\CollectionController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -22,3 +23,4 @@ Route::apiResource('order', OrderController::class);
 Route::apiResource('image', ImageController::class);
 Route::apiResource('favorite', FavoriteController::class);
 Route::apiResource('address', AddressController::class);
+Route::apiResource('collection', CollectionController::class);
