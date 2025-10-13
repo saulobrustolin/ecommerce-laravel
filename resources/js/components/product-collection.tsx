@@ -1,7 +1,7 @@
 export default function ProductCollection() {
     return (
-        <section>
+        <article>
             
-        </section>
+        </article>
     )
 }

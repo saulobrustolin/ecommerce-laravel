@@ -2,11 +2,12 @@ import AppDefaultTemplate from '@/layouts/app/app-default-layout';
 import { type ReactNode } from 'react';
 
 interface AppDefaultProps {
-    children: ReactNode;
+    children: ReactNode,
+    sticky?: boolean
 }
 
-export default ({ children, ...props }: AppDefaultProps) => (
-    <AppDefaultTemplate {...props}>
+export default ({ children, sticky, ...props }: AppDefaultProps) => (
+    <AppDefaultTemplate sticky={sticky} {...props}>
         {children}
     </AppDefaultTemplate>
 );

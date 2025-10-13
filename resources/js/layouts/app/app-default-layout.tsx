@@ -2,13 +2,16 @@ import Footer from "@/components/footer";
 import NavMenu from "@/components/nav-menu";
 
 type AppDefaultLayoutProps = {
-    children: React.ReactNode
+    children: React.ReactNode,
+    sticky?: boolean
 }
 
-export default function AppDefaultLayout({ children }: AppDefaultLayoutProps) {
+export default function AppDefaultLayout({ children, sticky }: AppDefaultLayoutProps) {
     return (
         <>
-            <NavMenu/>
+            <NavMenu
+                sticky={sticky}
+            />
             {children}
             <Footer/>
         </>
