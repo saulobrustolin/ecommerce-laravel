@@ -45,6 +45,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $token = $user->createToken('api_token')->plainTextToken;
+
         return redirect()->intended(route('home', absolute: false));
     }
 

@@ -13,15 +13,8 @@ class ImageController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $images = Image->all();
+        return $images;
     }
 
     /**
@@ -29,21 +22,15 @@ class ImageController extends Controller
      */
     public function store(StoreImageRequest $request)
     {
-        //
+        dd($request->file('imagem'));
+
+        return ['status' => true];
     }
 
     /**
      * Display the specified resource.
      */
     public function show(Image $image)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Image $image)
     {
         //
     }

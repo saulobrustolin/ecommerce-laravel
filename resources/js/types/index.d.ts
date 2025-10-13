@@ -41,3 +41,12 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export type OrderProps = {
+    id: number;
+    total_price: number;
+    payment_method: string;
+    shipping_method: string;
+    status: boolean,
+    created_at: string
+}

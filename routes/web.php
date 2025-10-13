@@ -30,7 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('profile/edit', function () {
         return Inertia::render('profile/edit');
-    })->name('profile.edit');
+    })->name('profile.editar');
 });
 
 require __DIR__.'/settings.php';

@@ -1,4 +1,5 @@
-import { PackageIcon, UserRound } from "lucide-react";
+import { logout } from "@/routes";
+import { LogOut, PackageIcon, UserRound } from "lucide-react";
 
 type MenuProfileProps = {
     className?: string
@@ -25,6 +26,10 @@ export default function MenuProfile({ className }: MenuProfileProps) {
             icon: (<PackageIcon/>),
         },
     ];
+
+    const handleLogout = async () => {
+        await fetch('http://localhost:8000/logout', { method: 'POST' });
+    }
     
     return (
         <div
@@ -49,6 +54,13 @@ export default function MenuProfile({ className }: MenuProfileProps) {
                         })
                     ) : null
                 }
+                <li
+                    onClick={() => logout()}
+                    className="flex gap-4 p-4 font-bold cursor-pointer hover:text-red-500"
+                >
+                    <LogOut />
+                    Sair da conta
+                </li>
             </ul>
         </div>
     )

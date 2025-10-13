@@ -15,15 +15,15 @@ return new class extends Migration
             $table->id();
             $table->float('shipping_cost');
             $table->float('discount_amount');
-            $table->string('cupom_code', 80);
+            $table->string('cupom_code', 80)->nullable();
             $table->float('total_price');
-            $table->string('order_code');
+            $table->string('order_code')->unique();
             $table->string('payment_method', 30);
             $table->datetime('paid_at')->nullable();
             $table->text('id_transition')->nullable();
             $table->string('shipping_method', 30);
-            $table->string('tracking_code', 30);
-            $table->boolean('status');
+            $table->string('tracking_code', 30)->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
 
             $table->foreignId('user_id')->constrained('users');

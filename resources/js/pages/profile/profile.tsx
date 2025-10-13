@@ -1,6 +1,5 @@
 import ProfileLayout from '@/layouts/profile-layout';
 import { SharedData } from '@/types';
-import { Button } from '@headlessui/react';
 import { Head, usePage } from '@inertiajs/react';
 import { SquarePen } from 'lucide-react';
 
@@ -19,38 +18,50 @@ export default function Profile() {
                 <SquarePen size={18} />
                 Editar
             </a>
-            <div
-                className='grid grid-cols-1 lg:grid-cols-2 p-6 gap-4 w-full'
-            >
+            <div>
+
                 <div
-                    className='flex flex-col gap-2'
+                    className='grid grid-cols-1 lg:grid-cols-2 p-6 gap-4 w-full'
                 >
-                    <span
-                        className='text-white/75'
+                    <div
+                        className='flex flex-col gap-2'
                     >
-                        Nome
-                    </span>
-                    {auth.user.name}
+                        <span
+                            className='text-white/75'
+                        >
+                            Nome
+                        </span>
+                        {auth.user.name}
+                    </div>
+                    <div
+                        className='flex flex-col gap-2'
+                    >
+                        <span
+                            className='text-white/75'
+                        >
+                            E-mail
+                        </span>
+                        {auth.user.email}
+                    </div>
+                    <div
+                        className='flex flex-col gap-2'
+                    >
+                        <span
+                            className='text-white/75'
+                        >
+                            Autenticação 2-fatores
+                        </span>
+                        {auth.user.two_factor_enabled ? 'Sim' : 'Não'}
+                    </div>
                 </div>
                 <div
-                    className='flex flex-col gap-2'
+                    className='text-end mt-4'
                 >
                     <span
-                        className='text-white/75'
+                        className='cursor-pointer hover:underline text-red-500'
                     >
-                        E-mail
+                        Excluir minha conta
                     </span>
-                    {auth.user.email}
-                </div>
-                <div
-                    className='flex flex-col gap-2'
-                >
-                    <span
-                        className='text-white/75'
-                    >
-                        Autenticação 2-fatores
-                    </span>
-                    {auth.user.two_factor_enabled ? 'Sim' : 'Não'}
                 </div>
             </div>
         </ProfileLayout>

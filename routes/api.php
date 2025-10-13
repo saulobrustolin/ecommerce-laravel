@@ -11,10 +11,16 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\UserController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+Route::patch('/user/{user}', [UserController::class, 'update']);
+Route::delete('/user/{user}', [UserController::class, 'delete']);
+
+Route::get('/order/{id}', [OrderController::class, 'index']);
 
 Route::apiResource('product', ProductController::class);
 Route::apiResource('review', ReviewController::class);

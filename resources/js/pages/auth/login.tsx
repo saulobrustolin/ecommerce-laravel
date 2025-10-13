@@ -28,6 +28,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 {...AuthenticatedSessionController.store.form()}
                 resetOnSuccess={['password']}
                 className="flex flex-col gap-6"
+                onSuccess={(response: any) => {
+                    if (response.token) {
+                        localStorage.setItem('api_token', response.token)
+                    }
+                }}
             >
                 {({ processing, errors }) => (
                     <>
