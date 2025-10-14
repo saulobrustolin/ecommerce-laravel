@@ -152,3 +152,16 @@ h1.font-title {
         @apply bg-background text-foreground;
     }
 }
+
+*::-webkit-scrollbar {
+  width: 3px;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply bg-stone-800;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+

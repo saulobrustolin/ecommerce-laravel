@@ -28,7 +28,7 @@ class OrderSeeder extends Seeder
                 'discount_amount' => 0,
                 'total_price' => 66.69,
                 'payment_method' => 'PIX',
-                'id_transition' => '561531255313125315321561265321176923651',
+                'id_transition' => Str::random(25),
                 'shipping_method' => 'SEDEX',
                 'user_id' => 1,
                 'order_code' => $code
@@ -39,7 +39,7 @@ class OrderSeeder extends Seeder
                 'quantity' => 1,
                 'subtotal' => 49.99,
                 'product_id' => 1,
-                'order_id' => $i + 2
+                'order_id' => $i + 1
             ]);
         }
     }

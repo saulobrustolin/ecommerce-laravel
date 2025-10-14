@@ -1,6 +1,6 @@
 import { usePage } from "@inertiajs/react";
 import Title from "./ui/title";
-import { ImagesProps, ProductProps, SharedData } from "@/types";
+import { ImageProps, ProductProps, SharedData } from "@/types";
 import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
 import { Ban, CircleCheck, LoaderCircle, ShoppingBasket, TrashIcon, X } from "lucide-react";
 import { Input } from "./ui/input";
@@ -118,7 +118,7 @@ export default function Cart({ setOpenCart }: CartProps) {
                 className="w-full bg-white p-8 h-screen flex flex-col gap-6 z-10 justify-between divide-y divide-stone-300"
             >
                 <div
-                    className="flex flex-col gap-1 p-0 m-0"
+                    className="grid grid-rows-[auto_1fr_auto] max-h-full gap-1 p-0 m-0"
                 >
                     <div
                         className="flex justify-between items-center mb-2"
@@ -134,7 +134,9 @@ export default function Cart({ setOpenCart }: CartProps) {
                         />
                     </div>
 
-                    <div>
+                    <div
+                        className="h-full overflow-y-auto relative"
+                    >
                         {
                             loading ? (
                                 <LoaderCircle className="animate-spin text-black size-6" />
@@ -153,7 +155,7 @@ export default function Cart({ setOpenCart }: CartProps) {
                                                         >
                                                             {
                                                                 product.images ? (
-                                                                    product.images.map((image: ImagesProps, index: number) => {
+                                                                    product.images.map((image: ImageProps, index: number) => {
                                                                         return (
                                                                             <img
                                                                                 src={image.url}
@@ -276,12 +278,16 @@ export default function Cart({ setOpenCart }: CartProps) {
                             )
                         }
                     </div>
+                    <div
+                        className="w-full py-2"
+                    >
+                        <Button
+                            className="bg-black w-full box-border hover:bg-black/90 transition-all text-white rounded-none h-14 p-4 cursor-pointer"
+                        >
+                            Finalizar compra
+                        </Button>
+                    </div>
                 </div>
-                <Button
-                    className="bg-black hover:bg-black/90 transition-all text-white rounded-none h-14 p-4 cursor-pointer"
-                >
-                    Finalizar compra
-                </Button>
             </div>
         </div>
     )
