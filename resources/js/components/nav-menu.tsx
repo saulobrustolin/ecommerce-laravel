@@ -38,7 +38,8 @@ function NavMenu({ sticky = false }: NavMenuProps) {
     useEffect(() => {
         const body = document.body.classList
         if (openCart) {
-            body.add('overflow-y-hidden');
+            const exists = body.contains('overflow-y-scroll');
+            exists ? body.replace('overflow-y-scroll', 'overflow-y-hidden') : body.add('overflow-y-hidden');
         } else {
             const exists = body.contains('overflow-y-hidden');
             exists ? body.replace('overflow-y-hidden', 'overflow-y-scroll') : body.add('overflow-y-scroll');
@@ -69,7 +70,7 @@ function NavMenu({ sticky = false }: NavMenuProps) {
                             </Link>
 
                             <span
-                                className={`border-b-1 w-6 h-0.5 ${sticky ? 'bg-white': 'bg-stone-800'}`}
+                                className={`border-b-1 w-6 h-0.5 ${sticky ? 'bg-white' : 'bg-stone-800'}`}
                             />
                         </div>
                     ) : (
@@ -94,7 +95,7 @@ function NavMenu({ sticky = false }: NavMenuProps) {
             </NavLink>
 
             <a href="/" className="flex items-center justify-center">
-                <img 
+                <img
                     src={sticky ? '/logo-white.svg' : '/logo-black.svg'} alt="logo da marca"
                     className="h-6 text-center"
                 />
@@ -124,8 +125,8 @@ function NavMenu({ sticky = false }: NavMenuProps) {
                                 )
                             }
                             <Link
-                                href='/search'
-                                className={sticky ? 'text-white' : 'text-stone-800'}
+                                href="/search"
+                                className={`${sticky ? 'text-white' : 'text-stone-800'} uppercase font-bold text-sm hover:underline underline-offset-2 decoration-2 cursor-pointer`}
                             >
                                 search
                             </Link>
@@ -133,7 +134,7 @@ function NavMenu({ sticky = false }: NavMenuProps) {
                     ) : null
                 }
                 <span
-                    className="text-stone-800 uppercase font-bold text-sm hover:underline underline-offset-2 decoration-2 cursor-pointer"
+                    className={`${sticky ? 'text-white' : 'text-stone-800'} uppercase font-bold text-sm hover:underline underline-offset-2 decoration-2 cursor-pointer`}
                     onClick={() => setOpenCart(prev => !prev)}
                 >
                     bolsa

@@ -17,7 +17,7 @@ class CartController extends Controller
     {
         $products = Cart::where('user_id', $user)
         ->join('products', 'carts.product_id', '=', 'products.id')
-        ->select('carts.id', 'products.*')
+        ->select('products.*', 'carts.id', 'carts.quantity')
         ->get();
 
         return [
@@ -30,5 +30,14 @@ class CartController extends Controller
         $cart->delete();
 
         return ['mensagem' => 'Sucesso ao remover item.'];
+    }
+
+    public function update(Cart $cart, UpdateCartRequest $request)
+    {
+        $cart->update([
+            'quantity' => $request->get('quantity')
+        ]);
+
+        return ['mensagem' => 'Sucesso ao alterar a quantidade de produtos do carrinho.'];
     }
 }

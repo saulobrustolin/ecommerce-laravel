@@ -3,11 +3,12 @@ import { type ReactNode } from 'react';
 
 interface AppDefaultProps {
     children: ReactNode,
-    sticky?: boolean
+    sticky?: boolean,
+    className?: string,
 }
 
-export default ({ children, sticky, ...props }: AppDefaultProps) => (
-    <AppDefaultTemplate sticky={sticky} {...props}>
+export default ({ children, sticky, className, ...props }: AppDefaultProps) => (
+    <AppDefaultTemplate sticky={sticky} className={className} {...props}>
         {children}
     </AppDefaultTemplate>
 );

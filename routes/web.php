@@ -7,6 +7,10 @@ Route::get('/', function () {
     return Inertia::render('home');
 })->name('home');
 
+Route::get('/search', function () {
+    return Inertia::render('search');
+})->name('search');
+
 Route::middleware(['collection'])->group(function () {
     Route::get('/collection/{slug}', function ($slug) {
         return Inertia::render('collection', [

@@ -3,16 +3,21 @@ import NavMenu from "@/components/nav-menu";
 
 type AppDefaultLayoutProps = {
     children: React.ReactNode,
-    sticky?: boolean
+    sticky?: boolean,
+    className?: string,
 }
 
-export default function AppDefaultLayout({ children, sticky }: AppDefaultLayoutProps) {
+export default function AppDefaultLayout({ children, sticky, className }: AppDefaultLayoutProps) {
     return (
         <>
             <NavMenu
                 sticky={sticky}
             />
-            {children}
+            <main
+                className={`${className} min-h-screen`}
+            >
+                {children}
+            </main>
             <Footer/>
         </>
     )

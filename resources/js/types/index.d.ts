@@ -51,9 +51,15 @@ export type OrderProps = {
     created_at: string
 }
 
-export type ImagesProps = {
+export type ImageProps = {
     id: number;
     url: string;
+}
+
+export type SlugProps = {
+    id: number,
+    name: string,
+    color: string,
 }
 
 export type ProductProps = {
@@ -63,8 +69,10 @@ export type ProductProps = {
     short_description: string;
     description: string;
     price: number;
+    quantity: number;
     url: string;
     created_at: string | null;
     updated_at: string | null;
-    images: ImagesProps[]
+    images: ImageProps[],
+    slugs: SlugProps[]
 }

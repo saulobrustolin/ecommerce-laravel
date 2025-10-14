@@ -26,9 +26,10 @@ export default function FooterSocialMedia() {
             className="flex gap-4 justify-start items-center"
         >
             {
-                medias.map((value: mediaProps) => {
+                medias.map((value: mediaProps, index: number) => {
                     return (
                         <Link
+                            key={`${value.name}-${index}`}
                             target="_blank"
                             href={value.link}
                         >
