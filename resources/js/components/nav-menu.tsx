@@ -5,6 +5,7 @@ import { SharedData } from "@/types";
 
 import Link from "./ui/link";
 import NavLink from "./ui/nav-link";
+import Cart from "./cart";
 
 type NavMenuProps = {
     sticky?: boolean
@@ -15,6 +16,8 @@ function NavMenu({ sticky = false }: NavMenuProps) {
 
     const [scrollY, setScrollY] = useState<number>(window.scrollY);
     const [width, setWidth] = useState<number>(window.innerWidth);
+
+    const [openCart, setOpenCart] = useState<boolean>(false);
 
     const [openMenu, setOpenMenu] = useState<boolean>(false);
 
@@ -32,10 +35,19 @@ function NavMenu({ sticky = false }: NavMenuProps) {
 
         window.addEventListener('resize', handleResize);
     }, [document.body.clientWidth])
+    useEffect(() => {
+        const body = document.body.classList
+        if (openCart) {
+            body.add('overflow-y-hidden');
+        } else {
+            const exists = body.contains('overflow-y-hidden');
+            exists ? body.replace('overflow-y-hidden', 'overflow-y-scroll') : body.add('overflow-y-scroll');
+        }
+    }, [openCart])
 
     return (
         <div
-            className={`grid grid-cols-[1fr_1fr_1fr] items-center justify-between p-4 px-12 top-0 w-full z-50 ${sticky ? 'sticky bg-[#222]' : 'fixed'}`}
+            className={`grid grid-cols-[1fr_1fr_1fr] items-center justify-between transition-all p-4 px-12 top-0 w-full z-50 ${sticky ? 'sticky bg-[#222]' : 'fixed'}`}
         >
             <NavLink>
                 {
@@ -120,13 +132,18 @@ function NavMenu({ sticky = false }: NavMenuProps) {
                         </>
                     ) : null
                 }
-                <Link
-                    href='/cart'
-                    className="text-stone-800"
+                <span
+                    className="text-stone-800 uppercase font-bold text-sm hover:underline underline-offset-2 decoration-2 cursor-pointer"
+                    onClick={() => setOpenCart(prev => !prev)}
                 >
                     bolsa
-                </Link>
+                </span>
             </NavLink>
+            {
+                openCart ? (
+                    <Cart setOpenCart={setOpenCart} />
+                ) : null
+            }
         </div>
     )
 }
