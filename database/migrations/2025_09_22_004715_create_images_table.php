@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('url')->unique();
             $table->timestamps();
 
-            $table->foreignId('slug_id')->constrained('slugs');
+            $table->foreignId('product_id')->constrained('products');
         });
     }
 

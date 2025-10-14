@@ -30,7 +30,7 @@ class OrderSeeder extends Seeder
                 'payment_method' => 'PIX',
                 'id_transition' => '561531255313125315321561265321176923651',
                 'shipping_method' => 'SEDEX',
-                'user_id' => 2,
+                'user_id' => 1,
                 'order_code' => $code
             ]);
 

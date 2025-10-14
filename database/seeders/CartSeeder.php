@@ -18,6 +18,7 @@ class CartSeeder extends Seeder
             Cart::insert([
                 'user_id' => 1,
                 'product_id' => $i,
+                'quantity' => $i,
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
