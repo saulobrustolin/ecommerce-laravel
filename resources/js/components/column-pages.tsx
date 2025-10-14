@@ -76,10 +76,11 @@ export default function ColumnPages() {
             {
                 pages.map((value: PagesProps) => {
                     return (
-                        <div>
+                        <div
+                            key={value.title}
+                        >
                             <h3
                                 className="uppercase mb-4 font-semibold"
-                                key={value.title}
                             >
                                 {value.title}
                             </h3>

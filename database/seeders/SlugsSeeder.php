@@ -16,70 +16,70 @@ class SlugsSeeder extends Seeder
     {
         DB::table('slugs')->insert([
             'name' => 'Branco',
-            'image' => '',
+            'color' => '#FFF',
             'created_at' => now(),
             'updated_at' => now(),
             'product_id' => 1
         ]);
         DB::table('slugs')->insert([
             'name' => 'Preta',
-            'image' => '',
+            'color' => '#000',
             'created_at' => now(),
             'updated_at' => now(),
             'product_id' => 2
         ]);
         DB::table('slugs')->insert([
+            'name' => 'Preta',
+            'color' => '#000',
+            'created_at' => now(),
+            'updated_at' => now(),
+            'product_id' => 6
+        ]);
+        DB::table('slugs')->insert([
             'name' => 'Azul Claro',
-            'image' => '',
+            'color' => '#00A8FF',
             'created_at' => now(),
             'updated_at' => now(),
             'product_id' => 3
         ]);
         DB::table('slugs')->insert([
             'name' => 'Cinza Mescla',
-            'image' => '',
+            'color' => '#63625F',
             'created_at' => now(),
             'updated_at' => now(),
             'product_id' => 4
         ]);
         DB::table('slugs')->insert([
-            'name' => 'Verde Oliva',
-            'image' => '',
-            'created_at' => now(),
-            'updated_at' => now(),
-            'product_id' => 5
-        ]);
-        DB::table('slugs')->insert([
-            'name' => 'Preto',
-            'image' => '',
-            'created_at' => now(),
-            'updated_at' => now(),
-            'product_id' => 6
-        ]);
-        DB::table('slugs')->insert([
-            'name' => 'Azul Marinho',
-            'image' => '',
-            'created_at' => now(),
-            'updated_at' => now(),
-            'product_id' => 7
-        ]);
-        DB::table('slugs')->insert([
             'name' => 'Cinza Claro',
-            'image' => '',
+            'color' => '#63625F',
             'created_at' => now(),
             'updated_at' => now(),
             'product_id' => 8
         ]);
         DB::table('slugs')->insert([
+            'name' => 'Verde Oliva',
+            'color' => '#86895D',
+            'created_at' => now(),
+            'updated_at' => now(),
+            'product_id' => 5
+        ]);
+        DB::table('slugs')->insert([
+            'name' => 'Azul Marinho',
+            'color' => '#000080',
+            'created_at' => now(),
+            'updated_at' => now(),
+            'product_id' => 7
+        ]);
+        DB::table('slugs')->insert([
             'name' => 'Verde Militar',
-            'image' => '',
+            'color' => '#466028',
             'created_at' => now(),
             'updated_at' => now(),
             'product_id' => 9
         ]);
         DB::table('slugs')->insert([
             'name' => 'Bege Areia',
-            'image' => '',
+            'color' => '#CBBD93',
             'created_at' => now(),
             'updated_at' => now(),
             'product_id' => 10
