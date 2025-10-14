@@ -1,4 +1,6 @@
+import AuthenticatedSessionController from "@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController";
 import { logout } from "@/routes";
+import { Form } from "@inertiajs/react";
 import { LogOut, PackageIcon, UserRound } from "lucide-react";
 
 type MenuProfileProps = {
@@ -23,14 +25,14 @@ export default function MenuProfile({ className }: MenuProfileProps) {
         {
             name: "Meus pedidos",
             href: "/profile/pedidos",
-            icon: (<PackageIcon/>),
+            icon: (<PackageIcon />),
         },
     ];
 
     const handleLogout = async () => {
         await fetch('http://localhost:8000/logout', { method: 'POST' });
     }
-    
+
     return (
         <div
             className={`${className ? className : ''} flex flex-col justify-center`}
@@ -54,13 +56,12 @@ export default function MenuProfile({ className }: MenuProfileProps) {
                         })
                     ) : null
                 }
-                <li
-                    onClick={() => logout()}
-                    className="flex gap-4 p-4 font-bold cursor-pointer hover:text-red-500"
-                >
-                    <LogOut />
-                    Sair da conta
-                </li>
+                <Form className="hover:bg-white/5 cursor-pointer" {...AuthenticatedSessionController.destroy.form()}>
+                    <button className="flex gap-4 p-4 font-bold hover:text-red-500 cursor-pointer" type="submit">
+                        <LogOut/>
+                        Sair
+                    </button>
+                </Form>
             </ul>
         </div>
     )

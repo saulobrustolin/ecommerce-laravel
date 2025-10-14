@@ -7,7 +7,7 @@ export default function NavMenuProfile() {
         >
             <a
                 href="/"
-                className="flex gap-2 items-center cursor-pointer text-white p-2 hover:underline underline-offset-2"
+                className="flex gap-2 items-center cursor-pointer text-white p-2 hover:underline underline-offset-2 text-sm lg:text-md"
             >
                 <Undo2 />
                 Voltar para página inicial

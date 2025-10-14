@@ -21,6 +21,7 @@ export default function Pedidos() {
     return (
         <ProfileLayout>
             <div
+                className="min-h-[200px]"
             >
                 {
                     orders ? (

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderProduct;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 
@@ -13,43 +14,33 @@ class OrderController extends Controller
      */
     public function index($id)
     {
-        $rows = Order::where('user_id', $id)
-        ->join('order_product', 'orders.id', '=', 'order_product.order_id')
-        ->join('products', 'order_product.product_id', '=', 'products.id')
-        ->select(
-            'orders.id as order_id',
-            'orders.total_price', 
-            'orders.payment_method', 
-            'orders.shipping_method', 
-            'orders.status as order_status', 
-            'order_product.quantity'
-        )
-        ->get();
+        $rows = Order::where('user_id', $id)->get();
 
         $orders = [];
 
-        foreach($rows as $row) {
-            $order_id = $row->order_id;
+        foreach ($rows as $row) {
+            $orderId = $row->id;
 
-            if (!isset($orders[$order_id])) {
-                $orders[$order_id] = [
-                    'id' => $order_id,
-                    'total_price' => $row->total_price,
-                    'order_code' => $row->order_code,
-                    'payment_method' => $row-> payment_method,
-                    'shipping_method' => $row->shipping_method,
-                    'status' => $row->order_status,
-                    'quantity' => $row->quantity,
-                    'products' => []
-                ];
-            }
+            $products = OrderProduct::where('order_id', $orderId)
+            ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->get();
 
-            $orders[$order_id]['products'][] = [
-                ''
+            $order = [
+                'id' => $row->id,
+                'shipping_cost' => $row->shipping_cost,
+                'discount_amount' => $row->discount_amount,
+                'total_price' => $row->total_price,
+                'order_code' => $row->order_code,
+                'payment_method' => $row->payment_method,
+                'shipping_method' => $row->shipping_method,
+                'status_order' => $row->status,
+                'products' => $products
             ];
+            
+            $orders[] = $order;
         }
 
-        return ['data' => array_values($orders)];
+        return ['data' => $rows, 'orders' => $orders];
     }
 
     /**
