@@ -1,3 +1,4 @@
+import ProductCollection from "@/components/product-collection";
 import AppLayout from "@/layouts/app-layout";
 import { ProductProps } from "@/types";
 import { Ban, Undo2 } from "lucide-react";
@@ -6,8 +7,6 @@ import { toast } from "sonner";
 
 export default function Search() {
     const [products, setProducts] = useState<ProductProps[] | null>(null);
-
-    const gridCols = 3;
 
     const handleProducts = async () => {
         const options = {
@@ -36,7 +35,7 @@ export default function Search() {
             className="bg-white min-h-screen"
         >
             <div
-                className="bg-white fixed top-0 left-0 w-screen h-screen p-8 md:py-12 md:px-10 xl:p-12 flex flex-col gap-4 mt-16"
+                className="bg-white min-w-screen min-h-screen p-8 md:py-12 md:px-10 xl:p-12 xl:pt-18 flex flex-col gap-4"
             >
                 <div
                     className="flex justify-between items-center mb-8"
@@ -57,25 +56,24 @@ export default function Search() {
                         placeholder="Digite o que está buscando..."
                     />
                 </div>
+                <ul
+                    className={`grid grid-cols-3 gap-2`}
+                >
+                    {
+                        products && products.length !== 0 ? (
+                            products.map((product: ProductProps) => {
+                                console.log(product);
+                                return (
+                                    <ProductCollection
+                                        product={product}
+                                        key={product.id}
+                                    />
+                                )
+                            })
+                        ) : null
+                    }
+                </ul>
             </div>
-            <ul
-                className={`grid grid-cols-${gridCols} gap-2`}
-            >
-                {
-                    products && products.length !== 0 ? (
-                        products.map((product: ProductProps) => {
-                            return (
-                                <li
-                                    key={product.id}
-                                    className="text-black"
-                                >
-                                    {product.name}
-                                </li>
-                            )
-                        })
-                    ) : null
-                }
-            </ul>
         </AppLayout>
     )
 }

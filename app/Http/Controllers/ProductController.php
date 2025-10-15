@@ -27,7 +27,7 @@ class ProductController extends Controller
             ->select('id', 'name', 'color')
             ->get();
 
-            $products[$row->id][] = [
+            $products[] = [
                 'id' => $row->id,
                 'created_at' => $row->created_at,
                 'updated_at' => $row->updated_at,
@@ -41,7 +41,7 @@ class ProductController extends Controller
             ];
         }
 
-        return ['data' => array_values($products)];
+        return ['data' => $products];
     }
 
     public function store(StoreProductRequest $request)

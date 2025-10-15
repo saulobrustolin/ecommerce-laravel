@@ -279,7 +279,7 @@ export default function Cart({ setOpenCart }: CartProps) {
                         }
                     </div>
                     <div
-                        className="w-full py-2"
+                        className="w-full pt-2"
                     >
                         <Button
                             className="bg-black w-full box-border hover:bg-black/90 transition-all text-white rounded-none h-14 p-4 cursor-pointer"
