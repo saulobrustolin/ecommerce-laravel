@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('slugs', function (Blueprint $table) {
             $table->id();
             $table->string('name', 80);
-            $table->string('color', 10);
+            $table->string('color', 10)->nullable();
             $table->timestamps();
 
             $table->foreignId('product_id')->constrained('products');

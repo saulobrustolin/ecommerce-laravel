@@ -43,7 +43,7 @@ class UserController extends Controller
     {
         $user->update($request->all());
 
-        return ['response' => 'Sucesso ao atualizar perfil.'];
+        return ['response' => 'Sucesso ao atualizar perfil.', 'request' => $request->all()];
     }
 
     /**

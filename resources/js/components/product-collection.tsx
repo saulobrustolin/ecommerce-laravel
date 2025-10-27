@@ -1,4 +1,5 @@
 import { ProductProps } from "@/types"
+import { MouseEvent } from "react";
 
 type ProductCollectionProps = {
     product: ProductProps;
@@ -6,13 +7,16 @@ type ProductCollectionProps = {
 
 export default function ProductCollection({ product }: ProductCollectionProps) {
     return (
-        <article
+        <a
             className="flex flex-col gap-1"
+            href={`/product/${product.id}`}
         >
             <img
                 src={product.images[0].url}
                 className="h-[600px] object-cover"
                 height={500}
+                onMouseOver={(element: MouseEvent<HTMLImageElement>) => element.currentTarget.src = product.images[1].url}
+                onMouseOut={(element: MouseEvent<HTMLImageElement>) => element.currentTarget.src = product.images[0].url}
             />
             <div
                 className="flex flex-col gap-0.5"
@@ -38,6 +42,6 @@ export default function ProductCollection({ product }: ProductCollectionProps) {
                     )
                 }
             </div>
-        </article>
+        </a>
     )
 }

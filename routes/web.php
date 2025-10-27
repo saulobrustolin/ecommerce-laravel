@@ -11,6 +11,12 @@ Route::get('/search', function () {
     return Inertia::render('search');
 })->name('search');
 
+Route::get('/product/{id}', function ($id) {
+    return Inertia::render('product', [
+        'id' => $id
+    ]);
+})->name('product');
+
 Route::middleware(['collection'])->group(function () {
     Route::get('/collection/{slug}', function ($slug) {
         return Inertia::render('collection', [

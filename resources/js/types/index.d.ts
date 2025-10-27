@@ -59,7 +59,7 @@ export type ImageProps = {
 export type SlugProps = {
     id: number,
     name: string,
-    color: string,
+    color: string | null,
 }
 
 export type ProductProps = {

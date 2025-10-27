@@ -2,11 +2,12 @@ import ProductCollection from "@/components/product-collection";
 import AppLayout from "@/layouts/app-layout";
 import { ProductProps } from "@/types";
 import { Ban, Undo2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function Search() {
     const [products, setProducts] = useState<ProductProps[] | null>(null);
+    const [search, setSearch] = useState<string>('');
 
     const handleProducts = async () => {
         const options = {
@@ -17,18 +18,23 @@ export default function Search() {
             }
         }
 
-        const response = await fetch('/api/product', options);
+        const response = await fetch('/api/product' + (search ? `?search=${search}` : ''), options);
         if (!response.ok) {
             toast('Não foi possível capturar os produtos no banco de dados, tente novamente mais tarde...', { icon: <Ban className="text-red-500 mr-4 size-5" /> })
             return
         }
         const json = await response.json()
+        if (json.data == products) return
+
         setProducts(json.data);
     }
 
     useEffect(() => {
         handleProducts();
     }, [])
+    useEffect(() => {
+        handleProducts();
+    }, [search])
 
     return (
         <AppLayout
@@ -54,6 +60,7 @@ export default function Search() {
                     <input
                         className="border-b border-r-0 border-t-0 p-2 border-l-0 border-b-stone-400 h-full text-4xl rounded-none w-full focus:outline-0 placeholder:text-4xl placeholder:text-stone-400 text-black"
                         placeholder="Digite o que está buscando..."
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
                     />
                 </div>
                 <ul

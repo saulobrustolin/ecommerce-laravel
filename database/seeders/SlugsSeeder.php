@@ -26,6 +26,34 @@ class SlugsSeeder extends Seeder
             'color' => '#000',
             'created_at' => now(),
             'updated_at' => now(),
+            'product_id' => 1
+        ]);
+        DB::table('slugs')->insert([
+            'name' => 'P',
+            'color' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'product_id' => 1
+        ]);
+        DB::table('slugs')->insert([
+            'name' => 'M',
+            'color' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'product_id' => 1
+        ]);
+        DB::table('slugs')->insert([
+            'name' => 'G',
+            'color' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+            'product_id' => 1
+        ]);
+        DB::table('slugs')->insert([
+            'name' => 'Preta',
+            'color' => '#000',
+            'created_at' => now(),
+            'updated_at' => now(),
             'product_id' => 2
         ]);
         DB::table('slugs')->insert([

@@ -6,15 +6,24 @@ use App\Models\CollectionProduct;
 use App\Models\Product;
 use App\Models\Image;
 use App\Models\Slugs;
+use App\Models\Review;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 
+use Illuminate\Http\Request;
+
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $rows = Product::where('available', true)->get();
+        $query = $request->query('search');
+
+        $rows = Product::where(
+            'available', true
+        )->where(
+            'name', 'ILIKE', "%{$query}%"
+        )->get();
 
         $products = [];
 
@@ -27,6 +36,10 @@ class ProductController extends Controller
             ->select('id', 'name', 'color')
             ->get();
 
+            $reviews = Review::where('product_id', $row->id)
+            ->select('id', 'describe', 'star')
+            ->get();
+
             $products[] = [
                 'id' => $row->id,
                 'created_at' => $row->created_at,
@@ -37,11 +50,12 @@ class ProductController extends Controller
                 'description' => $row->description,
                 'price' => $row->price,
                 'images' => $images,
-                'slugs' => $slugs
+                'slugs' => $slugs,
+                'reviews' => $reviews
             ];
         }
 
-        return ['data' => $products];
+        return ['data' => $products, 'query' => $query];
     }
 
     public function store(StoreProductRequest $request)
@@ -59,7 +73,29 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return $product;
+        $images = Image::where(
+            'product_id', $product->id
+        )->get();
+
+        $reviews = Review::where(
+            'product_id', $product->id
+        )
+        ->select('id', 'describe', 'star')
+        ->get();
+
+        $slugs = Slugs::where('product_id', $product->id)
+            ->select('id', 'name', 'color')
+            ->get();
+
+        $value = 0;
+        if (count($reviews) > 0) {
+            foreach ($reviews as $row) {
+                $value += $row->star;
+            }
+            $value = $value / count($reviews);
+        }
+
+        return ['data' => [...$product->toArray(), 'slugs' => $slugs], 'images' => $images, 'reviews' => $reviews, 'star' => $value];
     }
 
     public function update(UpdateProductRequest $request, Product $product)

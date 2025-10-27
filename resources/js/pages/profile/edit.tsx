@@ -5,30 +5,26 @@ import ProfileLayout from "@/layouts/profile-layout";
 import { SharedData } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { CircleCheck, CircleX, LoaderCircle } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "sonner";
 
 export default function ProfileEdit() {
     const [loading, setLoading] = useState<boolean>(false);
+
+    const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
 
     const { auth } = usePage<SharedData>().props;
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const formData = new FormData(e.currentTarget);
-        const object: { nome?: string, email?: string } = {}
-
-        const nome = formData.get('nome') as string;
-        if (nome) {
-            object.nome = nome
-        }
-        const email = formData.get('email') as string;
-        if (email) {
-            object.email = email
-        }
-
         setLoading(prev => !prev);
+
+        const object: { name?: string, email?: string } = {};
+
+        name ? object.name = name : null;
+        email ? object.email = email : null;
 
         try {
             const options = {
@@ -40,13 +36,15 @@ export default function ProfileEdit() {
                 body: JSON.stringify(object)
             }
 
-            const response = await fetch(import.meta.env.VITE_API_ENDPOINT + '/user/' + auth.user.id, options);
+            const response = await fetch('/api/user/' + auth.user.id, options);
+            const json = await response.json();
+            console.log(options.body)
             if (response.ok) {
                 toast('Sucesso ao editar suas informações!', { icon: <CircleCheck className="text-lime-500 size-5 mr-2" /> })
+                console.log(json)
                 setLoading(prev => !prev)
                 return
             } else {
-                const json = await response.json();
                 console.log(json)
                 toast('Não foi possível editar seus dados, tente novamente mais tarde!', { icon: <CircleX className="text-red-500 size-5 mr-2" /> })
                 setLoading(prev => !prev)
@@ -72,6 +70,8 @@ export default function ProfileEdit() {
                         placeholder="digite seu novo nome..."
                         className="w-full"
                         disabled={loading}
+                        defaultValue={name}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.target.value.trim())}
                     />
                 </div>
                 <div
@@ -82,6 +82,8 @@ export default function ProfileEdit() {
                         placeholder="digite seu novo e-mail..."
                         className="w-full"
                         disabled={loading}
+                        defaultValue={email}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value.trim())}
                     />
                 </div>
                 <Button
