@@ -35,3 +35,4 @@ Route::apiResource('collection', CollectionController::class);
 Route::get('/cart/{user}', [CartController::class, 'show'])->name('cart.show');
 Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('cart.destroy');
 Route::patch('/cart/{cart}', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart', [CartController::class, 'store'])->name('cart.store');

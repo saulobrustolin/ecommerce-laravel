@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users');
+            
             $table->float('shipping_cost');
             $table->float('discount_amount');
             $table->string('cupom_code', 80)->nullable();
@@ -26,7 +28,6 @@ return new class extends Migration
             $table->boolean('status')->default(true);
             $table->timestamps();
 
-            $table->foreignId('user_id')->constrained('users');
         });
 
         Schema::create('order_product', function (Blueprint $table) {

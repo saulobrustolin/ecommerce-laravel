@@ -83,9 +83,7 @@ class ProductController extends Controller
         ->select('id', 'describe', 'star')
         ->get();
 
-        $slugs = Slugs::where('product_id', $product->id)
-            ->select('id', 'name', 'color')
-            ->get();
+        $sizes = $product->slugs->pluck('sizes.name');
 
         $value = 0;
         if (count($reviews) > 0) {
@@ -95,7 +93,7 @@ class ProductController extends Controller
             $value = $value / count($reviews);
         }
 
-        return ['data' => [...$product->toArray(), 'slugs' => $slugs], 'images' => $images, 'reviews' => $reviews, 'star' => $value];
+        return ['data' => [...$product->toArray(), 'sizes' => $sizes], 'images' => $images, 'reviews' => $reviews, 'star' => $value, 'product' => $product];
     }
 
     public function update(UpdateProductRequest $request, Product $product)

@@ -10,7 +10,9 @@ class CartController extends Controller
 {
     public function store(StoreCartRequest $request)
     {
-        //
+        $cart = Cart::create($request->all());
+
+        return $cart;
     }
 
     public function show($user)

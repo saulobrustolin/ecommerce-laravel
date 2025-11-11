@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('slugs', function (Blueprint $table) {
             $table->id();
+            $table->boolean('available')->default(true);
             $table->string('name', 80);
             $table->string('color', 10)->nullable();
+            $table->decimal('price', 8, 2);
             $table->timestamps();
-
+            
+            $table->foreignId('size_id')->constrained('sizes');
             $table->foreignId('product_id')->constrained('products');
         });
     }

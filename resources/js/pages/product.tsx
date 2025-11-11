@@ -1,8 +1,10 @@
 import PickerCity from "@/components/picker-city";
 import PickerPrice from "@/components/picker-price";
 import AppLayout from "@/layouts/app-layout";
-import { ProductProps, SlugProps } from "@/types";
-import { LoaderCircle, Star } from "lucide-react";
+import { ProductProps, SharedData, SlugProps } from "@/types";
+import { usePage } from "@inertiajs/react";
+import axios, { AxiosResponse } from "axios";
+import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type ImagesProps = {
@@ -27,6 +29,8 @@ type ProductProp = {
 }
 
 export default function Product({ id }: { id: string }) {
+    const { auth } = usePage<SharedData>().props;
+
     const [product, setProduct] = useState<ProductProp | null>(null);
 
     const [slug, setSlug] = useState<string>('');
@@ -59,6 +63,19 @@ export default function Product({ id }: { id: string }) {
                 <img src="/loader.svg" alt="loader" className="animate-spin size-12" />
             </div>
         )
+    }
+
+    const handleAddCart = () => {
+        axios.post('/api/cart', {
+            quantity,
+            product_id: product.data.id,
+            user_id: auth.user.id
+        })
+            .then((value: AxiosResponse) => {
+                const data = value.data;
+
+                localStorage.getItem('cart')
+            });
     }
 
     return (
@@ -118,7 +135,7 @@ export default function Product({ id }: { id: string }) {
                                 <span
                                     className="font-semibold"
                                 >
-                                    R$ {product.data.price.toString().replace('.', ',')}
+                                    {/* R$ {product.data.price.toString().replace('.', ',')} */}
                                 </span>
                                 <span
                                     className="text-black/50 text-xs"
@@ -132,7 +149,7 @@ export default function Product({ id }: { id: string }) {
                                 <span
                                     className="text-xs text-black/50 font-semibold"
                                 >
-                                    {slug} | {product.data.id.toString().padStart(8, '0')}
+                                    {/* {slug} | {product.data.id.toString().padStart(8, '0')} */}
                                 </span>
                                 <div
                                     className="flex gap-2"
@@ -210,7 +227,8 @@ export default function Product({ id }: { id: string }) {
                                     />
 
                                     <button
-                                        className="bg-black text-white w-full"
+                                        className="bg-black text-white w-full cursor-pointer"
+                                        onClick={handleAddCart}
                                     >
                                         Adicionar a sacola
                                     </button>
