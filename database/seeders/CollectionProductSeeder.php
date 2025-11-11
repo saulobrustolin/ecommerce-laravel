@@ -57,36 +57,8 @@ class CollectionProductSeeder extends Seeder
             'collection_id' => 1,
             'product_id' => 7
         ]);
-        DB::table('collection_product')->insert([
-            'status' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'collection_id' => 1,
-            'product_id' => 15
-        ]);
-        DB::table('collection_product')->insert([
-            'status' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'collection_id' => 1,
-            'product_id' => 11
-        ]);
-        DB::table('collection_product')->insert([
-            'status' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'collection_id' => 1,
-            'product_id' => 14
-        ]);
 
         // novidades (1 de cada coleção)
-        DB::table('collection_product')->insert([
-            'status' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'collection_id' => 2,
-            'product_id' => 11
-        ]);
         DB::table('collection_product')->insert([
             'status' => true,
             'created_at' => now(),
@@ -174,43 +146,6 @@ class CollectionProductSeeder extends Seeder
             'updated_at' => now(),
             'collection_id' => 4,
             'product_id' => 10
-        ]);
-
-        // chinelos
-        DB::table('collection_product')->insert([
-            'status' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'collection_id' => 5,
-            'product_id' => 11
-        ]);
-        DB::table('collection_product')->insert([
-            'status' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'collection_id' => 5,
-            'product_id' => 12
-        ]);
-        DB::table('collection_product')->insert([
-            'status' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'collection_id' => 5,
-            'product_id' => 13
-        ]);
-        DB::table('collection_product')->insert([
-            'status' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'collection_id' => 5,
-            'product_id' => 14
-        ]);
-        DB::table('collection_product')->insert([
-            'status' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'collection_id' => 5,
-            'product_id' => 15
         ]);
     }
 }

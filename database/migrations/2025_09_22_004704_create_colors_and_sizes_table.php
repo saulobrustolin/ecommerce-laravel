@@ -11,15 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('slugs', function (Blueprint $table) {
+        Schema::create('sizes', function(Blueprint $table) {
             $table->id();
-            $table->boolean('available')->default(true);
-            $table->string('name', 80);
-            $table->string('color', 10)->nullable();
-            $table->decimal('price', 8, 2);
+            $table->string('name', 50);
             $table->timestamps();
-            
-            $table->foreignId('size_id')->constrained('sizes');
+
+            $table->foreignId('product_id')->constrained('products');
+        });
+
+        Schema::create('colors', function(Blueprint $table) {
+            $table->id();
+            $table->string('name', 50);
+            $table->string('color', 50);
+            $table->timestamps();
+
             $table->foreignId('product_id')->constrained('products');
         });
     }

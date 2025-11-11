@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Order;
 use App\Models\Collection;
-use App\Models\Slugs;
+use App\Models\Colors;
+use App\Models\Sizes;
 
 class Product extends Model
 {
@@ -30,7 +31,11 @@ class Product extends Model
             ->withTimestamps();
     }
 
-    public function slugs(): HasMany {
-        return $this->hasMany(Slugs::class);
+    public function colors(): HasMany {
+        return $this->hasMany(Colors::class);
+    }
+
+    public function sizes(): HasMany {
+        return $this->hasMany(Sizes::class);
     }
 }

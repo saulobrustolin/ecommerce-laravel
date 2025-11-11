@@ -71,32 +71,5 @@ class ProductSeeder extends Seeder
             'short_description' => 'Leve, casual e elegante, perfeito para o calor e o lazer.',
             'description' => 'O Calção Bege Areia é confeccionado em tecido leve e confortável, com corte reto e cós ajustável. Combina facilmente com camisetas básicas e sandálias, ideal para o verão.',
         ]);
-
-        // chinelos
-        DB::table('products')->insert([
-            'name' => 'Havaianas Brasil',
-            'short_description' => 'Sandália clássica Havaianas com bandeira do Brasil. Conforto e estilo para o dia a dia.',
-            'description' => 'As Havaianas Brasil são um ícone do design nacional, conhecidas pelo conforto e durabilidade. Possuem solado de borracha macia, tiras resistentes e a tradicional bandeirinha do Brasil em destaque. Ideais para uso diário, praia ou lazer, combinando com qualquer look casual.',
-        ]);
-        DB::table('products')->insert([
-            'name' => 'Havaianas Top Basic',
-            'short_description' => 'Sandália clássica Havaianas com bandeira do Brasil. Conforto e estilo para o dia a dia.',
-            'description' => 'As Havaianas Top Basic são um ícone do design nacional, conhecidas pelo conforto e durabilidade. Possuem solado de borracha macia, tiras resistentes e a tradicional bandeirinha do Brasil em destaque. Ideais para uso diário, praia ou lazer, combinando com qualquer look casual.',
-        ]);
-        DB::table('products')->insert([
-            'name' => 'Havaianas Dual',
-            'short_description' => 'Sandália clássica Havaianas com bandeira do Brasil. Conforto e estilo para o dia a dia.',
-            'description' => 'As Havaianas Dual são um ícone do design nacional, conhecidas pelo conforto e durabilidade. Possuem solado de borracha macia, tiras resistentes e a tradicional bandeirinha do Brasil em destaque. Ideais para uso diário, praia ou lazer, combinando com qualquer look casual.',
-        ]);
-        DB::table('products')->insert([
-            'name' => 'Havaianas Top Pride',
-            'short_description' => 'Sandália clássica Havaianas com bandeira do Brasil. Conforto e estilo para o dia a dia.',
-            'description' => 'As Havaianas Top Pride são um ícone do design nacional, conhecidas pelo conforto e durabilidade. Possuem solado de borracha macia, tiras resistentes e a tradicional bandeirinha do Brasil em destaque. Ideais para uso diário, praia ou lazer, combinando com qualquer look casual.',
-        ]);
-        DB::table('products')->insert([
-            'name' => 'Havaianas Simpsons',
-            'short_description' => 'Sandália clássica Havaianas com bandeira do Brasil. Conforto e estilo para o dia a dia.',
-            'description' => 'As Havaianas Simpsons são um ícone do design nacional, conhecidas pelo conforto e durabilidade. Possuem solado de borracha macia, tiras resistentes e a tradicional bandeirinha do Brasil em destaque. Ideais para uso diário, praia ou lazer, combinando com qualquer look casual.',
-        ]);
     }
 }
