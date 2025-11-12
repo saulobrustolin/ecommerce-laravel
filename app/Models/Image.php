@@ -4,21 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use App\Models\Review;
-use App\Models\Slugs;
+use App\Models\Product;
 
 class Image extends Model
 {
     /** @use HasFactory<\Database\Factories\ImageFactory> */
     use HasFactory;
 
-    public function reviews(): HasMany {
+    public function review(): HasMany {
         return $this->hasMany(Review::class);
     }
 
-    public function slugs(): HasMany {
-        return $this->hasMany(Slugs::class);
+    public function product(): BelongsTo {
+        return $this->belongsTo(Product::class);
     }
 }

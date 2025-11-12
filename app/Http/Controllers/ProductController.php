@@ -19,41 +19,16 @@ class ProductController extends Controller
     {
         $query = $request->query('search');
 
-        $rows = Product::where(
+        $products = Product::where(
             'available', true
         )->where(
             'name', 'ILIKE', "%{$query}%"
-        )->get();
-
-        $products = [];
-
-        foreach ($rows as $row) {
-            $images = Image::where('product_id', $row->id)
-            ->select('id', 'url')
-            ->get();
-
-            $slugs = Slugs::where('product_id', $row->id)
-            ->select('id', 'name', 'color')
-            ->get();
-
-            $reviews = Review::where('product_id', $row->id)
-            ->select('id', 'describe', 'star')
-            ->get();
-
-            $products[] = [
-                'id' => $row->id,
-                'created_at' => $row->created_at,
-                'updated_at' => $row->updated_at,
-                'name' => $row->name,
-                'available' => $row->available,
-                'short_description' => $row->short_description,
-                'description' => $row->description,
-                'price' => $row->price,
-                'images' => $images,
-                'slugs' => $slugs,
-                'reviews' => $reviews
-            ];
-        }
+        )->with([
+            'image:id,url,product_id',
+            'size:id,name,product_id',
+            'color:id,name,color,product_id'
+        ])
+        ->get(['id', 'name', 'short_description', 'description', 'created_at', 'updated_at', 'price']);
 
         return ['data' => $products, 'query' => $query];
     }
@@ -73,27 +48,15 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $images = Image::where(
-            'product_id', $product->id
-        )->get();
+        $product = $product->with([
+            'image:id,url,product_id',
+            'size:id,name,product_id',
+            'color:id,name,color,product_id',
+            'review:id,describe,star,product_id'
+        ])
+        ->get(['id', 'name', 'short_description', 'description', 'created_at', 'updated_at', 'price']);
 
-        $reviews = Review::where(
-            'product_id', $product->id
-        )
-        ->select('id', 'describe', 'star')
-        ->get();
-
-        $sizes = $product->slugs->pluck('sizes.name');
-
-        $value = 0;
-        if (count($reviews) > 0) {
-            foreach ($reviews as $row) {
-                $value += $row->star;
-            }
-            $value = $value / count($reviews);
-        }
-
-        return ['data' => [...$product->toArray(), 'sizes' => $sizes], 'images' => $images, 'reviews' => $reviews, 'star' => $value, 'product' => $product];
+        return ['product' => $product];
     }
 
     public function update(UpdateProductRequest $request, Product $product)

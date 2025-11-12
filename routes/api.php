@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\SlugsController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\FavoriteController;
@@ -25,7 +24,6 @@ Route::get('/order/{id}', [OrderController::class, 'index']);
 
 Route::apiResource('product', ProductController::class);
 Route::apiResource('review', ReviewController::class);
-Route::apiResource('slug', SlugsController::class);
 Route::apiResource('order', OrderController::class);
 Route::apiResource('image', ImageController::class);
 Route::apiResource('favorite', FavoriteController::class);

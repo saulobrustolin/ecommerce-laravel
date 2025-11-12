@@ -1,58 +1,38 @@
 import PickerCity from "@/components/picker-city";
 import PickerPrice from "@/components/picker-price";
 import AppLayout from "@/layouts/app-layout";
-import { ProductProps, SharedData, SlugProps } from "@/types";
+import { ColorProps, ImageProps, ProductProps, ReviewProps, SharedData, SizeProps } from "@/types";
 import { usePage } from "@inertiajs/react";
 import axios, { AxiosResponse } from "axios";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
-
-type ImagesProps = {
-    created_at: string,
-    id: number,
-    product_id: number,
-    updated_at: string,
-    url: string
-}
-
-type ReviewProps = {
-    id: number,
-    describe: string,
-    star: number
-}
-
-type ProductProp = {
-    data: ProductProps,
-    images: ImagesProps[],
-    reviews: ReviewProps[],
-    star: number
-}
+import { toast } from "sonner";
 
 export default function Product({ id }: { id: string }) {
     const { auth } = usePage<SharedData>().props;
 
-    const [product, setProduct] = useState<ProductProp | null>(null);
+    const [product, setProduct] = useState<ProductProps & { review: ReviewProps[] } & { star: number } | null>(null);
 
-    const [slug, setSlug] = useState<string>('');
-    const [tamanho, setTamanho] = useState<string>('');
+    const [cor, setCor] = useState<number>(0);
+    const [tamanho, setTamanho] = useState<number>(0);
     const [quantity, setQuantity] = useState<number>(1);
 
     useEffect(() => {
-        const getProduct = async () => {
-            await fetch('/api/product/' + id)
-                .then(async (response) => {
-                    const json: ProductProp = await response.json();
-                    setProduct(json);
-                    setSlug(json.data.slugs[0].name);
-
-                    const size = json.data.slugs.filter((value: SlugProps) => value.color == null)[0]
-                    setTamanho(size.name)
+        (async () => {
+            await axios.get(`/api/product/${id}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then((r) => {
+                    const data: ProductProps & { review: ReviewProps[] } & { star: number } = r.data;
+                    setProduct(data);
+                    setTamanho(data.size[0].id);
+                    setCor(data.color[0].id);
                 })
-                .catch((error) => {
-                    console.log(error)
-                });
-        }
-        getProduct();
+                .catch(() => toast.error('Erro ao recuperar dados deste produto.'))
+        })()
     }, [])
 
     if (!product) {
@@ -68,7 +48,7 @@ export default function Product({ id }: { id: string }) {
     const handleAddCart = () => {
         axios.post('/api/cart', {
             quantity,
-            product_id: product.data.id,
+            product_id: product.id,
             user_id: auth.user.id
         })
             .then((value: AxiosResponse) => {
@@ -92,7 +72,7 @@ export default function Product({ id }: { id: string }) {
                         className="grid grid-cols-1 md:grid-cols-2 md:gap-2"
                     >
                         {
-                            product.images.map((image: ImagesProps, index: number) => {
+                            product.image.map((image: ImageProps, index: number) => {
                                 return (
                                     <img key={`${image.id}-${index}`} src={image.url} alt={`imagem do produto ${index}`} className="lg:max-h-[1000px]" />
                                 )
@@ -107,7 +87,7 @@ export default function Product({ id }: { id: string }) {
                                 className="flex flex-col gap-2"
                             >
                                 <span className="lg:relative text-lg font-semibold uppercase">
-                                    {product.data.name}
+                                    {product.name}
                                 </span>
                                 {
                                     product.star !== 0 ? (
@@ -123,7 +103,7 @@ export default function Product({ id }: { id: string }) {
                                             <span
                                                 className="text-xs underline underline-offset-1"
                                             >
-                                                ({product.reviews.length})
+                                                ({product.review.length})
                                             </span>
                                         </div>
                                     ) : null
@@ -140,7 +120,7 @@ export default function Product({ id }: { id: string }) {
                                 <span
                                     className="text-black/50 text-xs"
                                 >
-                                    1x R$ ${product.data.price} sem juros
+                                    1x R$ ${product.price} sem juros
                                 </span>
                             </div>
                             <div
@@ -155,21 +135,19 @@ export default function Product({ id }: { id: string }) {
                                     className="flex gap-2"
                                 >
                                     {
-                                        product.data.slugs.map((slugItem: SlugProps) => {
-                                            if (slugItem.color !== null) {
-                                                return (
-                                                    <div
-                                                        className={`w-8 h-8 rounded-full p-0.75 cursor-pointer scale-100 hover:scale-[101%] ${slug == slugItem.name ? 'border' : ''}`}
-                                                        onClick={() => setSlug(slugItem.name)}
-                                                        key={slugItem.id}
-                                                    >
-                                                        <span
-                                                            className={`rounded-full border w-full h-full block `}
-                                                            style={{ backgroundColor: slugItem.color }}
-                                                        />
-                                                    </div>
-                                                )
-                                            }
+                                        product.color.map((colorItem: ColorProps) => {
+                                            return (
+                                                <div
+                                                    className={`w-8 h-8 rounded-full p-0.75 cursor-pointer scale-100 hover:scale-[101%] ${cor == colorItem.id ? 'border' : ''}`}
+                                                    onClick={() => setCor(colorItem.id)}
+                                                    key={colorItem.id}
+                                                >
+                                                    <span
+                                                        className={`rounded-full border w-full h-full block `}
+                                                        style={{ backgroundColor: colorItem.color }}
+                                                    />
+                                                </div>
+                                            )
                                         })
                                     }
                                 </div>
@@ -187,18 +165,16 @@ export default function Product({ id }: { id: string }) {
                                     className="flex gap-2"
                                 >
                                     {
-                                        product.data.slugs.map((slugItem: SlugProps, index: number) => {
-                                            if (slugItem.color == null) {
-                                                return (
-                                                    <span
-                                                        key={`${slugItem.id}-${index}`}
-                                                        className={`border w-12 h-8 flex items-center justify-center text-xs cursor-pointer scale-100 hover:scale-[101%] ${slugItem.name == tamanho ? 'bg-black text-white' : 'bg-white text-black'}`}
-                                                        onClick={() => setTamanho(slugItem.name)}
-                                                    >
-                                                        {slugItem.name}
-                                                    </span>
-                                                )
-                                            }
+                                        product.size.map((sizeItem: SizeProps, index: number) => {
+                                            return (
+                                                <span
+                                                    key={`${sizeItem.id}-${index}`}
+                                                    className={`border w-12 h-8 flex items-center justify-center text-xs cursor-pointer scale-100 hover:scale-[101%] ${sizeItem.id == tamanho ? 'bg-black text-white' : 'bg-white text-black'}`}
+                                                    onClick={() => setTamanho(sizeItem.id)}
+                                                >
+                                                    {sizeItem.name}
+                                                </span>
+                                            )
                                         })
                                     }
                                 </div>

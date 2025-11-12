@@ -11,6 +11,8 @@ use App\Models\Order;
 use App\Models\Collection;
 use App\Models\Colors;
 use App\Models\Sizes;
+use App\Models\Image;
+use App\Models\Review;
 
 class Product extends Model
 {
@@ -19,23 +21,31 @@ class Product extends Model
     
     protected $fillable = ['name', 'available', 'short_description', 'description', 'price'];
 
-    public function orders(): BelongsToMany {
+    public function order(): BelongsToMany {
         return $this->belongsToMany(Order::class)
             ->withPivot('price_unit', 'subtotal', 'quantity')
             ->withTimestamps();
     }
 
-    public function collections(): BelongsToMany {
+    public function collection(): BelongsToMany {
         return $this->belongsToMany(Collection::class)
             ->withPivot('status')
             ->withTimestamps();
     }
 
-    public function colors(): HasMany {
+    public function color(): HasMany {
         return $this->hasMany(Colors::class);
     }
 
-    public function sizes(): HasMany {
+    public function size(): HasMany {
         return $this->hasMany(Sizes::class);
+    }
+
+    public function image(): HasMany {
+        return $this->hasMany(Image::class);
+    }
+
+    public function review(): HasMany {
+        return $this->hasMany(Review::class);
     }
 }

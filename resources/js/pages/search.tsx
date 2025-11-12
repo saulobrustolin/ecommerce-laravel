@@ -1,6 +1,7 @@
 import ProductCollection from "@/components/product-collection";
 import AppLayout from "@/layouts/app-layout";
 import { ProductProps } from "@/types";
+import axios from "axios";
 import { Ban, Undo2 } from "lucide-react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -10,23 +11,17 @@ export default function Search() {
     const [search, setSearch] = useState<string>('');
 
     const handleProducts = async () => {
-        const options = {
-            method: 'GET',
+        await axios.get('/api/product', {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
+            },
+            params: {
+                search: search || ''
             }
-        }
-
-        const response = await fetch('/api/product' + (search ? `?search=${search}` : ''), options);
-        if (!response.ok) {
-            toast('Não foi possível capturar os produtos no banco de dados, tente novamente mais tarde...', { icon: <Ban className="text-red-500 mr-4 size-5" /> })
-            return
-        }
-        const json = await response.json()
-        if (json.data == products) return
-
-        setProducts(json.data);
+        })
+            .then(r => setProducts(r.data.data))
+            .catch(() => toast.error('Não foi possível capturar os produtos no banco de dados, tente novamente mais tarde...'))
     }
 
     useEffect(() => {
@@ -69,7 +64,6 @@ export default function Search() {
                     {
                         products && products.length !== 0 ? (
                             products.map((product: ProductProps) => {
-                                console.log(product);
                                 return (
                                     <ProductCollection
                                         product={product}

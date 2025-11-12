@@ -12,11 +12,11 @@ export default function ProductCollection({ product }: ProductCollectionProps) {
             href={`/product/${product.id}`}
         >
             <img
-                src={product.images[0].url}
+                src={product.image[0].url}
                 className="h-[600px] object-cover"
                 height={500}
-                onMouseOver={(element: MouseEvent<HTMLImageElement>) => element.currentTarget.src = product.images[1].url}
-                onMouseOut={(element: MouseEvent<HTMLImageElement>) => element.currentTarget.src = product.images[0].url}
+                onMouseOver={(element: MouseEvent<HTMLImageElement>) => element.currentTarget.src = product.image[1].url}
+                onMouseOut={(element: MouseEvent<HTMLImageElement>) => element.currentTarget.src = product.image[0].url}
             />
             <div
                 className="flex flex-col gap-0.5"
@@ -27,17 +27,17 @@ export default function ProductCollection({ product }: ProductCollectionProps) {
                     {product.name}
                 </span>
                 {
-                    product.price % Math.floor(product.price) == 0 ? (
+                    Number(product.price) % Math.floor(Number(product.price)) == 0 ? (
                         <span
                             className="text-stone-800/75 text-xs"
                         >
-                            R${product.price.toString() + ',00'}
+                            R${product.price.replace('.', ',')}
                         </span>
                     ) : (
                         <span
                             className="text-stone-800/75 text-xs"
                         >
-                            R${product.price.toFixed(2).replace('.', ',')}
+                            R${Number(product.price).toFixed(2).replace('.', ',')}
                         </span>
                     )
                 }

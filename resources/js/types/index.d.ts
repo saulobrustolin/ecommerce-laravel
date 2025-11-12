@@ -54,12 +54,20 @@ export type OrderProps = {
 export type ImageProps = {
     id: number;
     url: string;
+    product_id: number;
 }
 
-export type SlugProps = {
-    id: number,
-    name: string,
-    color: string | null,
+export type SizeProps = {
+    id: number;
+    name: string;
+    product_id: number;
+}
+
+export type ColorProps = {
+    id: number;
+    name: string;
+    color: string;
+    product_id: number;
 }
 
 export type ProductProps = {
@@ -68,11 +76,17 @@ export type ProductProps = {
     available: boolean,
     short_description: string;
     description: string;
-    price: number;
-    quantity: number;
-    url: string;
+    price: string;
     created_at: string | null;
     updated_at: string | null;
-    images: ImageProps[],
-    slugs: SlugProps[]
+    image: ImageProps[],
+    color: ColorProps[],
+    size: SizeProps[]
+}
+
+export type ReviewProps = {
+    id: number;
+    describe: string;
+    star: string;
+    product_id: string;
 }
