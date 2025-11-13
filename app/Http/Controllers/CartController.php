@@ -12,19 +12,28 @@ class CartController extends Controller
     {
         $cart = Cart::create($request->all());
 
+        $products = Cart::where('id', $cart->id)
+        ->with([
+            'product:id,name,available,price,short_description',
+            'product.image:id,url,product_id'
+        ])
+        ->get()
+        ->makeHidden(['user_id', 'product_id']);
+
         return $cart;
     }
 
     public function show($user)
     {
         $products = Cart::where('user_id', $user)
-        ->join('products', 'carts.product_id', '=', 'products.id')
-        ->select('products.*', 'carts.id', 'carts.quantity')
-        ->get();
+        ->with([
+            'product:id,name,available,price,short_description',
+            'product.image:id,url,product_id'
+        ])
+        ->get()
+        ->makeHidden(['user_id', 'product_id']);
 
-        return [
-            'data' => $products
-        ];
+        return $products;
     }
 
     public function destroy(Cart $cart)

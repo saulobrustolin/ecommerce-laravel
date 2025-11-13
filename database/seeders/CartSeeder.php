@@ -19,6 +19,8 @@ class CartSeeder extends Seeder
                 'user_id' => 1,
                 'product_id' => $i,
                 'quantity' => $i,
+                'size_id' => $i,
+                'color_id' => $i,
                 'created_at' => now(),
                 'updated_at' => now()
             ]);

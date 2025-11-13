@@ -28,7 +28,10 @@ class ProductController extends Controller
             'size:id,name,product_id',
             'color:id,name,color,product_id'
         ])
-        ->get(['id', 'name', 'short_description', 'description', 'created_at', 'updated_at', 'price']);
+        ->withCount(['review as total_reviews'])
+        ->withAvg('review', 'star')
+        ->paginate(9)
+        ->makeHidden(['quantity']);
 
         return ['data' => $products, 'query' => $query];
     }
@@ -54,9 +57,12 @@ class ProductController extends Controller
             'color:id,name,color,product_id',
             'review:id,describe,star,product_id'
         ])
-        ->get(['id', 'name', 'short_description', 'description', 'created_at', 'updated_at', 'price']);
+        ->withCount(['review as total_reviews'])
+        ->withAvg('review', 'star')
+        ->find($product->id)
+        ->makeHidden(['quantity']);
 
-        return ['product' => $product];
+        return $product;
     }
 
     public function update(UpdateProductRequest $request, Product $product)

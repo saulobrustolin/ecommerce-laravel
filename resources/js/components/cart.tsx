@@ -1,98 +1,65 @@
 import { usePage } from "@inertiajs/react";
 import Title from "./ui/title";
-import { ImageProps, ProductProps, SharedData } from "@/types";
+import { CartProps, ImageProps, ProductProps, SharedData } from "@/types";
 import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
 import { Ban, CircleCheck, LoaderCircle, ShoppingBasket, TrashIcon, X } from "lucide-react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import axios from "axios";
 
-type CartProps = {
+type CartOpenProps = {
     setOpenCart: React.Dispatch<SetStateAction<boolean>>
 }
 
-export default function Cart({ setOpenCart }: CartProps) {
+export default function Cart({ setOpenCart }: CartOpenProps) {
     const { auth } = usePage<SharedData>().props;
 
-    const [products, setProducts] = useState<ProductProps[] | null>(null);
+    const [cart, setCart] = useState<CartProps[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
     const getCart = async () => {
-        if (!auth.user.id) return
+        if (!auth.user) return
 
-        const options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        };
-        const carts = await fetch('/api/cart/' + auth.user.id, options);
-        if (carts.ok) {
-            const json = await carts.json()
-            localStorage.setItem('cart', JSON.stringify(json.data));
-            handleCart();
-            return
-        }
-
+        await axios.get(`/cart/${auth.user.id}`)
+            .then(r => {
+                localStorage.setItem('cart', JSON.stringify(r.data));
+            })
     }
 
     const handleCart = async () => {
         setLoading(prev => !prev);
         const local: string | null = localStorage.getItem('cart');
         if (local) {
-            const products = JSON.parse(local);
-            setProducts(products);
+            const carts = JSON.parse(local);
+            setCart(carts);
             setLoading(prev => !prev);
             return
         }
-        setProducts([]);
+        setCart([]);
         setLoading(prev => !prev);
     }
 
     const handleDeleteProduct = async (id: number) => {
-        if (!products) return
+        if (!cart) return
 
-        const filter = products.filter((product: ProductProps) => product.id !== id);
-        setProducts(filter);
+        const filter = cart.filter((c: CartProps) => c.id !== id);
+        setCart(filter);
         localStorage.setItem('cart', JSON.stringify(filter));
 
-        const options = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        };
-
-        const response = await fetch('/api/cart/' + id, options);
-        if (!response.ok) {
-            toast('Não foi possível remover o item do carrinho, tente novamente...', { icon: <Ban className="text-red-500 mr-4" /> })
-            return
-        }
-        const json = await response.json();
-        toast(json.mensagem, { icon: <CircleCheck className="text-lime-500 mr-4" /> });
+        await axios.delete(`/api/cart/${id}`)
+            .then(r => toast.success(r.data.mensagem))
+            .catch(() => toast.error("Não foi possível remover o item do carrinho, tente novamente..."))
     }
 
     const handleBlurQuantidade = async (e: ChangeEvent<HTMLInputElement>, id: number) => {
         const value = +e.target.value;
 
-        const options = {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                quantity: value
-            })
-        }
-        const response = await fetch('/api/cart/' + id, options);
-        if (!response.ok) {
-            toast('Não foi possível alterar a quantidade de produtos no banco de dados.', { icon: <Ban className="text-red-500 mr-4" /> });
-            return
-        }
+        await axios.patch(`/api/cart/${id}`, {
+            quantity: value
+        })
+            .catch(() => toast.error("Não foi possível alterar a quantidade de produtos no banco de dados."))
     }
 
     useEffect(() => {
@@ -101,10 +68,8 @@ export default function Cart({ setOpenCart }: CartProps) {
     }, []);
 
     useEffect(() => {
-        if (!products || products.length < 0) return
-
-        localStorage.setItem('cart', JSON.stringify(products));
-    }, [products])
+        if (cart.length > 0) return localStorage.setItem('cart', JSON.stringify(cart));
+    }, [cart])
 
     return (
         <div
@@ -118,7 +83,7 @@ export default function Cart({ setOpenCart }: CartProps) {
                 className="w-full bg-white p-8 h-screen flex flex-col gap-6 z-10 justify-between divide-y divide-stone-300"
             >
                 <div
-                    className="grid grid-rows-[auto_1fr_auto] max-h-full gap-1 p-0 m-0"
+                    className="grid grid-rows-[auto_1fr_auto] max-h-full min-h-full gap-1 p-0 m-0"
                 >
                     <div
                         className="flex justify-between items-center mb-2"
@@ -135,7 +100,7 @@ export default function Cart({ setOpenCart }: CartProps) {
                     </div>
 
                     <div
-                        className="h-full overflow-y-auto relative"
+                        className={`h-full overflow-y-auto relative flex flex-col ${cart.length === 0 ? "justify-center" : ""}`}
                     >
                         {
                             loading ? (
@@ -145,134 +110,114 @@ export default function Cart({ setOpenCart }: CartProps) {
                                     className="divide-y divide-stone-300"
                                 >
                                     {
-                                        products !== null ? (
-                                            products.length !== 0 ? (
-                                                products.map((product: ProductProps, indexProduct: number) => {
-                                                    return (
-                                                        <li
-                                                            key={product.id}
-                                                            className={`text-black/75 p-2 py-4 flex flex-col gap-4 ${product.quantity == 0 ? 'backdrop-blur-md' : ''}`}
+                                        cart && cart.length !== 0 ? (
+                                            cart.map((c: CartProps, indexProduct: number) => {
+                                                return (
+                                                    <li
+                                                        key={c.id}
+                                                        className={`text-black/75 p-2 py-4 flex flex-col gap-4 ${c.quantity == 0 ? 'backdrop-blur-md' : ''}`}
+                                                    >
+                                                        <a
+                                                            href="#"
+                                                            className="text-black/75 font-semibold flex flex-col gap-0.5"
+                                                        >
+                                                            {c.product.name}
+                                                            <span
+                                                                className="text-xs font-light line-clamp-1"
+                                                            >
+                                                                {c.product.short_description}
+                                                            </span>
+                                                        </a>
+                                                        <div
+                                                            className="flex flex-col gap-1"
+                                                        >
+                                                            <Label
+                                                                htmlFor={`input-quantidade-${indexProduct}`}
+                                                            >
+                                                                Quantidade
+                                                            </Label>
+                                                            <Input
+                                                                id={`input-quantidade-${indexProduct}`}
+                                                                data-index={indexProduct}
+                                                                min={1}
+                                                                value={c.quantity}
+                                                                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                                                    const value = +e.target.value;
+
+                                                                    setCart(prev =>
+                                                                        prev ? prev.map(ct =>
+                                                                            ct.id === c.id ? { ...ct, quantity: value } : c
+                                                                        ) : []
+                                                                    );
+                                                                }}
+                                                                onBlur={(e: ChangeEvent<HTMLInputElement>) => handleBlurQuantidade(e, c.product.id)}
+                                                                type="number"
+                                                                className="w-fit border-stone-300"
+                                                            />
+                                                        </div>
+                                                        <div
+                                                            className="flex justify-between items-center"
                                                         >
                                                             {
-                                                                product.images ? (
-                                                                    product.images.map((image: ImageProps, index: number) => {
-                                                                        return (
-                                                                            <img
-                                                                                src={image.url}
-                                                                                alt={`Imagem do produto ${index}`}
-                                                                                key={image.id}
-                                                                            />
-                                                                        )
-                                                                    })
-                                                                ) : null
+                                                                Number(c.product.price) % Math.floor(Number(c.product.price)) !== 0 ? (
+                                                                    <span
+                                                                        className="flex flex-col gap-0.5"
+                                                                    >
+                                                                        <span
+                                                                            className="text-sm text-black/50"
+                                                                        >
+                                                                            R${c.product.price.toString().replace('.', ',')} x {c.quantity}
+                                                                        </span>
+                                                                        <span
+                                                                            className="flex gap-0.5 font-semibold"
+                                                                        >
+                                                                            <span
+                                                                                className="text-black/50 font-normal"
+                                                                            >
+                                                                                Total:
+                                                                            </span>
+                                                                            R${(Number(c.product.price) * c.quantity).toString().replace('.', ',')}
+                                                                        </span>
+                                                                    </span>
+                                                                ) : (
+                                                                    <span
+                                                                        className="flex flex-col gap-0.5"
+                                                                    >
+                                                                        <span
+                                                                            className="text-sm text-black/50"
+                                                                        >
+                                                                            R${c.product.price},00 x {c.quantity}
+                                                                        </span>
+                                                                        <span
+                                                                            className="flex gap-1 font-semibold"
+                                                                        >
+                                                                            <span
+                                                                                className="text-black/50 font-normal"
+                                                                            >
+                                                                                Total:
+                                                                            </span>
+                                                                            R${Number(c.product.price) * c.quantity},00
+                                                                        </span>
+                                                                    </span>
+                                                                )
                                                             }
-                                                            <a
-                                                                href={product.url}
-                                                                className="text-black/75 font-semibold flex flex-col gap-0.5"
-                                                            >
-                                                                {product.name}
-                                                                <span
-                                                                    className="text-xs font-light line-clamp-1"
-                                                                >
-                                                                    {product.short_description}
-                                                                </span>
-                                                            </a>
-                                                            <div
-                                                                className="flex flex-col gap-1"
-                                                            >
-                                                                <Label
-                                                                    htmlFor={`input-quantidade-${indexProduct}`}
-                                                                >Quantidade</Label>
-                                                                <Input
-                                                                    id={`input-quantidade-${indexProduct}`}
-                                                                    data-index={indexProduct}
-                                                                    min={1}
-                                                                    value={product.quantity}
-                                                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                                                        const value = +e.target.value;
-
-                                                                        setProducts(prev =>
-                                                                            prev ? prev.map((p) =>
-                                                                                p.id === product.id ? { ...p, quantity: value } : p
-                                                                            ) : []
-                                                                        );
-                                                                    }}
-                                                                    onBlur={(e: ChangeEvent<HTMLInputElement>) => handleBlurQuantidade(e, product.id)}
-                                                                    type="number"
-                                                                    className="w-fit border-stone-300"
-                                                                />
-                                                            </div>
-                                                            <div
-                                                                className="flex justify-between items-center"
-                                                            >
-                                                                {
-                                                                    product.price % Math.floor(product.price) !== 0 ? (
-                                                                        <span
-                                                                            className="flex flex-col gap-0.5"
-                                                                        >
-                                                                            <span
-                                                                                className="text-sm text-black/50"
-                                                                            >
-                                                                                R${product.price.toString().replace('.', ',')} x {product.quantity}
-                                                                            </span>
-                                                                            <span
-                                                                                className="flex gap-0.5 font-semibold"
-                                                                            >
-                                                                                <span
-                                                                                    className="text-black/50 font-normal"
-                                                                                >
-                                                                                    Total:
-                                                                                </span>
-                                                                                R${(product.price * product.quantity).toString().replace('.', ',')}
-                                                                            </span>
-                                                                        </span>
-                                                                    ) : (
-                                                                        <span
-                                                                            className="flex flex-col gap-0.5"
-                                                                        >
-                                                                            <span
-                                                                                className="text-sm text-black/50"
-                                                                            >
-                                                                                R${product.price},00 x {product.quantity}
-                                                                            </span>
-                                                                            <span
-                                                                                className="flex gap-1 font-semibold"
-                                                                            >
-                                                                                <span
-                                                                                    className="text-black/50 font-normal"
-                                                                                >
-                                                                                    Total:
-                                                                                </span>
-                                                                                R${product.price * product.quantity},00
-                                                                            </span>
-                                                                        </span>
-                                                                    )
-                                                                }
-                                                                <TrashIcon
-                                                                    data-id={product.id}
-                                                                    className="size-4.5 cursor-pointer scale-100 hover:scale-110 transition-all"
-                                                                    onClick={() => handleDeleteProduct(product.id)}
-                                                                />
-                                                            </div>
-                                                        </li>
-                                                    )
-                                                })
-                                            ) : (
-                                                <span>
-                                                    Sem itens até o momento :L
-                                                </span>
-                                            )
-                                        ) : null
-                                    }
-                                    {
-                                        products !== null && products.length == 0 ? (
+                                                            <TrashIcon
+                                                                data-id={c.id}
+                                                                className="size-4.5 cursor-pointer scale-100 hover:scale-110 transition-all"
+                                                                onClick={() => handleDeleteProduct(c.id)}
+                                                            />
+                                                        </div>
+                                                    </li>
+                                                )
+                                            })
+                                        ) : (
                                             <span
-                                                className="flex flex-col gap-6 text-lg uppercase"
+                                                className="flex flex-col gap-6 text-neutral-900 font-bold text-2xl items-center h-full justify-center uppercase"
                                             >
-                                                <ShoppingBasket className="size-12" />
+                                                <ShoppingBasket className="size-18" />
                                                 Carrinho vazio.
                                             </span>
-                                        ) : null
+                                        )
                                     }
                                 </ul>
                             )

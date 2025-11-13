@@ -3,12 +3,50 @@ import AppLayout from "@/layouts/app-layout";
 import { ProductProps } from "@/types";
 import axios from "axios";
 import { Ban, Undo2 } from "lucide-react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+
+function useVisibilityProgress(options = {}) {
+    const ref = useRef(null);
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        if (!ref.current) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    const visibleHeight = entry.intersectionRect.height;
+                    const totalHeight = entry.boundingClientRect.height;
+
+                    const percent = Math.min(
+                        100,
+                        Math.max(0, (visibleHeight / totalHeight) * 100)
+                    );
+
+                    setProgress(percent);
+                });
+            },
+            {
+                threshold: Array.from({ length: 100 }, (_, i) => i / 100),
+                ...options
+            }
+        );
+
+        observer.observe(ref.current);
+
+        return () => observer.disconnect();
+    }, []);
+
+    return { ref, progress };
+}
 
 export default function Search() {
     const [products, setProducts] = useState<ProductProps[] | null>(null);
     const [search, setSearch] = useState<string>('');
+    const [page, setPage] = useState<number>(1);
+
+    const { ref, progress } = useVisibilityProgress();
 
     const handleProducts = async () => {
         await axios.get('/api/product', {
@@ -17,7 +55,8 @@ export default function Search() {
                 'Accept': 'application/json'
             },
             params: {
-                search: search || ''
+                search: search || '',
+                page
             }
         })
             .then(r => setProducts(r.data.data))
@@ -31,6 +70,10 @@ export default function Search() {
         handleProducts();
     }, [search])
 
+    useEffect(() => {
+        console.log(progress)
+    }, [progress])
+
     return (
         <AppLayout
             className="bg-white min-h-screen"
@@ -40,6 +83,7 @@ export default function Search() {
             >
                 <div
                     className="flex justify-between items-center mb-8"
+                    ref={ref}
                 >
                     <a
                         href="/"

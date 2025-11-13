@@ -74,14 +74,17 @@ export type ProductProps = {
     id: number;
     name: string;
     available: boolean,
-    short_description: string;
-    description: string;
     price: string;
+    description: string;
+    short_description: string;
     created_at: string | null;
     updated_at: string | null;
+    total_reviews: number;
+    review_avg_star: number | null;
     image: ImageProps[],
     color: ColorProps[],
-    size: SizeProps[]
+    size: SizeProps[],
+    review: ReviewProps[]
 }
 
 export type ReviewProps = {
@@ -89,4 +92,21 @@ export type ReviewProps = {
     describe: string;
     star: string;
     product_id: string;
+}
+
+export type CartProps = {
+    id: number;
+    quantity: number;
+    created_at: string;
+    updated_at: string;
+    size_id: number;
+    color_id: number;
+    product: {
+        id: number;
+        name: string;
+        available: boolean;
+        price: string;
+        short_description: string;
+        image: ImageProps[]
+    }
 }

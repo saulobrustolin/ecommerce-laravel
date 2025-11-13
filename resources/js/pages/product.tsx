@@ -1,32 +1,29 @@
 import PickerCity from "@/components/picker-city";
 import PickerPrice from "@/components/picker-price";
 import AppLayout from "@/layouts/app-layout";
-import { ColorProps, ImageProps, ProductProps, ReviewProps, SharedData, SizeProps } from "@/types";
+import { CartProps, ColorProps, ImageProps, ProductProps, ReviewProps, SharedData, SizeProps } from "@/types";
 import { usePage } from "@inertiajs/react";
-import axios, { AxiosResponse } from "axios";
-import { Star } from "lucide-react";
+import axios from "axios";
+import { Check, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function Product({ id }: { id: string }) {
     const { auth } = usePage<SharedData>().props;
 
-    const [product, setProduct] = useState<ProductProps & { review: ReviewProps[] } & { star: number } | null>(null);
+    const [product, setProduct] = useState<ProductProps | null>(null);
 
     const [cor, setCor] = useState<number>(0);
     const [tamanho, setTamanho] = useState<number>(0);
     const [quantity, setQuantity] = useState<number>(1);
 
+    const [success, setSuccess] = useState<boolean>(false);
+
     useEffect(() => {
         (async () => {
-            await axios.get(`/api/product/${id}`, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
+            await axios.get(`/api/product/${id}`)
                 .then((r) => {
-                    const data: ProductProps & { review: ReviewProps[] } & { star: number } = r.data;
+                    const data: ProductProps = r.data;
                     setProduct(data);
                     setTamanho(data.size[0].id);
                     setCor(data.color[0].id);
@@ -46,16 +43,56 @@ export default function Product({ id }: { id: string }) {
     }
 
     const handleAddCart = () => {
+        if (!auth.user) return addingCart();
+
+        function addingCart(api: CartProps | null = null) {
+            if (!product) return
+
+            const data: CartProps = {
+                id: 0,
+                quantity,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+                size_id: tamanho,
+                color_id: cor,
+                product: {
+                    id: product?.id,
+                    name: product?.name,
+                    available: true,
+                    price: product?.price,
+                    short_description: product?.short_description,
+                    image: product?.image
+                }
+            }
+
+            try {
+                const cartLocal = localStorage.getItem('cart');
+                if (!cartLocal) return localStorage.setItem('cart', JSON.stringify(api ? [api] : [data]));
+    
+                const cart = JSON.parse(cartLocal);
+                console.log(cart)
+                cart.push(api ?? data)
+    
+                localStorage.setItem('cart', JSON.stringify(cart));
+            } finally {
+                setSuccess(true);
+                setTimeout(() => {
+                    setSuccess(false)
+                }, 2000);
+            }
+        }
+
         axios.post('/api/cart', {
             quantity,
             product_id: product.id,
-            user_id: auth.user.id
+            user_id: auth.user.id,
+            size_id: tamanho,
+            color_id: cor
         })
-            .then((value: AxiosResponse) => {
-                const data = value.data;
-
-                localStorage.getItem('cart')
-            });
+            .then(v => {
+                addingCart(v.data)
+            })
+            .catch(() => toast.error("Não foi possível adicionar este produto ao carrinho."));
     }
 
     return (
@@ -90,20 +127,20 @@ export default function Product({ id }: { id: string }) {
                                     {product.name}
                                 </span>
                                 {
-                                    product.star !== 0 ? (
+                                    product.review_avg_star && product.review_avg_star !== 0 ? (
                                         <div
                                             className="flex items-center justify-start text-sm gap-1"
                                         >
                                             <span
                                                 className="text-md"
                                             >
-                                                {product.star}
+                                                {product.review_avg_star}
                                             </span>
                                             <Star className="fill-black size-3" />
                                             <span
                                                 className="text-xs underline underline-offset-1"
                                             >
-                                                ({product.review.length})
+                                                ({product.total_reviews})
                                             </span>
                                         </div>
                                     ) : null
@@ -115,7 +152,7 @@ export default function Product({ id }: { id: string }) {
                                 <span
                                     className="font-semibold"
                                 >
-                                    {/* R$ {product.data.price.toString().replace('.', ',')} */}
+                                    R$ {product.price.replace('.', ',')}
                                 </span>
                                 <span
                                     className="text-black/50 text-xs"
@@ -129,7 +166,7 @@ export default function Product({ id }: { id: string }) {
                                 <span
                                     className="text-xs text-black/50 font-semibold"
                                 >
-                                    {/* {slug} | {product.data.id.toString().padStart(8, '0')} */}
+                                    Cores
                                 </span>
                                 <div
                                     className="flex gap-2"
@@ -203,10 +240,10 @@ export default function Product({ id }: { id: string }) {
                                     />
 
                                     <button
-                                        className="bg-black text-white w-full cursor-pointer"
+                                        className="bg-black text-white w-full cursor-pointer flex items-center justify-center"
                                         onClick={handleAddCart}
                                     >
-                                        Adicionar a sacola
+                                        {success ? <Check /> : "Adicionar a sacola"}
                                     </button>
                                 </div>
                             </div>

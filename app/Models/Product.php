@@ -13,6 +13,7 @@ use App\Models\Colors;
 use App\Models\Sizes;
 use App\Models\Image;
 use App\Models\Review;
+use App\Models\Cart;
 
 class Product extends Model
 {
@@ -47,5 +48,9 @@ class Product extends Model
 
     public function review(): HasMany {
         return $this->hasMany(Review::class);
+    }
+
+    public function cart(): HasMany {
+        return $this->hasMany(Cart::class);
     }
 }
