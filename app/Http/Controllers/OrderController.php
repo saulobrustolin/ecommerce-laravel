@@ -7,6 +7,8 @@ use App\Models\OrderProduct;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 
+use Illuminate\Support\Facades\DB;
+
 class OrderController extends Controller
 {
     /**
@@ -14,41 +16,23 @@ class OrderController extends Controller
      */
     public function index($id)
     {
-        $rows = Order::where('user_id', $id)->get();
-
-        $orders = [];
-
-        foreach ($rows as $row) {
-            $orderId = $row->id;
-
-            $products = OrderProduct::where('order_id', $orderId)
-            ->join('products', 'order_product.product_id', '=', 'products.id')
+        $orders = Order::where('user_id', $id)
+            ->with([
+                'product:id,name,short_description',
+            ])
             ->get();
 
-            $order = [
-                'id' => $row->id,
-                'shipping_cost' => $row->shipping_cost,
-                'discount_amount' => $row->discount_amount,
-                'total_price' => $row->total_price,
-                'order_code' => $row->order_code,
-                'payment_method' => $row->payment_method,
-                'shipping_method' => $row->shipping_method,
-                'status_order' => $row->status,
-                'products' => $products
-            ];
-            
-            $orders[] = $order;
-        }
+        // carregar size e color do pivot
+        $orders->each(function ($order) {
+            $order->product->each(function ($product) {
+                $product->pivot->load([
+                    'size:id,name',
+                    'color:id,name'
+                ]);
+            });
+        });
 
-        return ['data' => $rows, 'orders' => $orders];
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return $orders;
     }
 
     /**
@@ -56,21 +40,17 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        $user = $request->get('user');
+
+        $r = DB::select('SELECT transformarPedido(:user)', [$user]);
+
+        return $r;
     }
 
     /**
      * Display the specified resource.
      */
     public function show(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
     {
         //
     }

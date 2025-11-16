@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\belongsToMany;
 use Illuminate\Support\Str;
 
 use App\Models\Product;
+use App\Models\OrderProduct;
 
 class Order extends Model
 {
@@ -26,9 +27,10 @@ class Order extends Model
         });
     }
 
-    public function products() {
-        return $this->belongsToMany(Product::class)
-            ->withPivot('price_unit', 'subtotal', 'quantity')
-            ->withTimestamps();
+    public function product() {
+        return $this->belongsToMany(Product::class, 'order_product')
+            ->using(OrderProduct::class)
+            ->withPivot('price_unit', 'subtotal', 'quantity', 'size_id', 'color_id')
+            ->as('pivot');
     }
 }

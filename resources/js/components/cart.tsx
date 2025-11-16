@@ -1,8 +1,8 @@
 import { usePage } from "@inertiajs/react";
 import Title from "./ui/title";
-import { CartProps, ImageProps, ProductProps, SharedData } from "@/types";
+import { CartProps, SharedData } from "@/types";
 import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
-import { Ban, CircleCheck, LoaderCircle, ShoppingBasket, TrashIcon, X } from "lucide-react";
+import { LoaderCircle, ShoppingBasket, TrashIcon, X } from "lucide-react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
@@ -22,9 +22,10 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
     const getCart = async () => {
         if (!auth.user) return
 
-        await axios.get(`/cart/${auth.user.id}`)
+        await axios.get(`/api/cart/${auth.user.id}`)
             .then(r => {
                 localStorage.setItem('cart', JSON.stringify(r.data));
+                setCart(r.data);
             })
     }
 
@@ -60,6 +61,17 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
             quantity: value
         })
             .catch(() => toast.error("Não foi possível alterar a quantidade de produtos no banco de dados."))
+    }
+
+    const handleFinishCart = async () => {
+        if (!auth.user) return window.location.href = '/login';
+
+        await axios.post('/api/order', { user: auth.user.id })
+            .then(() => {
+                localStorage.removeItem('cart');
+                window.location.href = '/profile/pedidos';
+            })
+            .catch(er => console.error(er.response));
     }
 
     useEffect(() => {
@@ -114,7 +126,7 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
                                             cart.map((c: CartProps, indexProduct: number) => {
                                                 return (
                                                     <li
-                                                        key={c.id}
+                                                        key={`${c.size_id}-${indexProduct}-${c.id}`}
                                                         className={`text-black/75 p-2 py-4 flex flex-col gap-4 ${c.quantity == 0 ? 'backdrop-blur-md' : ''}`}
                                                     >
                                                         <a
@@ -146,7 +158,7 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
 
                                                                     setCart(prev =>
                                                                         prev ? prev.map(ct =>
-                                                                            ct.id === c.id ? { ...ct, quantity: value } : c
+                                                                            ct.id === c.id ? { ...ct, quantity: value } : ct
                                                                         ) : []
                                                                     );
                                                                 }}
@@ -166,7 +178,7 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
                                                                         <span
                                                                             className="text-sm text-black/50"
                                                                         >
-                                                                            R${c.product.price.toString().replace('.', ',')} x {c.quantity}
+                                                                            R${c.product.price.replace('.', ',')} x {c.quantity}
                                                                         </span>
                                                                         <span
                                                                             className="flex gap-0.5 font-semibold"
@@ -176,7 +188,7 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
                                                                             >
                                                                                 Total:
                                                                             </span>
-                                                                            R${(Number(c.product.price) * c.quantity).toString().replace('.', ',')}
+                                                                            R${(Number(c.product.price) * Number(c.quantity)).toFixed(2).replace('.', ',')}
                                                                         </span>
                                                                     </span>
                                                                 ) : (
@@ -186,7 +198,7 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
                                                                         <span
                                                                             className="text-sm text-black/50"
                                                                         >
-                                                                            R${c.product.price},00 x {c.quantity}
+                                                                            R${c.product.price.replace('.', ',')} x {c.quantity}
                                                                         </span>
                                                                         <span
                                                                             className="flex gap-1 font-semibold"
@@ -196,7 +208,7 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
                                                                             >
                                                                                 Total:
                                                                             </span>
-                                                                            R${Number(c.product.price) * c.quantity},00
+                                                                            R${Number(Number(c.product.price) * c.quantity).toFixed(2).replace('.', ',')}
                                                                         </span>
                                                                     </span>
                                                                 )
@@ -228,8 +240,10 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
                     >
                         <Button
                             className="bg-black w-full box-border hover:bg-black/90 transition-all text-white rounded-none h-14 p-4 cursor-pointer"
+                            disabled={cart.length === 0}
+                            onClick={handleFinishCart}
                         >
-                            Finalizar compra
+                            {loading ? (<img src="/public/loader.svg" width={20} height={20} />) : "Finalizar compra"}
                         </Button>
                     </div>
                 </div>

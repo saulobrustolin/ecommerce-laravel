@@ -25,9 +25,8 @@ return new class extends Migration
             $table->text('id_transition')->nullable();
             $table->string('shipping_method', 30);
             $table->string('tracking_code', 30)->nullable();
-            $table->boolean('status')->default(true);
+            $table->string('status', 30)->default('Aguardando pagamento');
             $table->timestamps();
-
         });
 
         Schema::create('order_product', function (Blueprint $table) {
@@ -39,6 +38,8 @@ return new class extends Migration
 
             $table->foreignId('product_id')->constrained('products');
             $table->foreignId('order_id')->constrained('orders');
+            $table->foreignId('size_id')->constrained('sizes');
+            $table->foreignId('color_id')->constrained('colors');
         });
     }
 

@@ -42,13 +42,46 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export type ProductOrderProps = {
+    id: number;
+    name: string;
+    short_description: string;
+    pivot: {
+        order_id: number;
+        product_id: number;
+        price_unit: number;
+        subtotal: number;
+        quantity: number;
+        size_id: number;
+        color_id: number;
+        size: {
+            id: number;
+            name: string;
+        },
+        color: {
+            id: number;
+            name: string;
+        }
+    }
+}
+
 export type OrderProps = {
     id: number;
+    user_id: number;
+    shipping_cost: number;
+    discount_amount: number;
+    cupom_code: string | null;
     total_price: number;
+    order_code: string;
     payment_method: string;
+    paid_at: string | null;
+    id_transition: string;
     shipping_method: string;
-    status: boolean,
-    created_at: string
+    tracking_code: string | null;
+    status: string;
+    created_at: string | null;
+    updated_at: string | null;
+    product: ProductOrderProps[];
 }
 
 export type ImageProps = {
