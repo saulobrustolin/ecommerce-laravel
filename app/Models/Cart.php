@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Sizes;
 use App\Models\Colors;
+use App\Models\Address;
 
 class Cart extends Model
 {

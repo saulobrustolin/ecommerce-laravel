@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             ColorsSeeder::class,
             CartSeeder::class,
             ImageSeeder::class,
-            OrderSeeder::class
+            OrderSeeder::class,
+            AddressSeeder::class
         ]);
     }
 }

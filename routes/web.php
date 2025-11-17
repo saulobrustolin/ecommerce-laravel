@@ -43,5 +43,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('profile.editar');
 });
 
+Route::get('checkout', function() {
+    return Inertia::render('checkout/checkout');
+})->name('checkout');
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

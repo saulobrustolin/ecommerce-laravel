@@ -10,11 +10,14 @@ use Illuminate\Support\Str;
 
 use App\Models\Product;
 use App\Models\OrderProduct;
+use App\Models\User;
 
 class Order extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
+
+    protected $fillable = ['status'];
 
     protected static function booted()
     {
@@ -32,5 +35,14 @@ class Order extends Model
             ->using(OrderProduct::class)
             ->withPivot('price_unit', 'subtotal', 'quantity', 'size_id', 'color_id')
             ->as('pivot');
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 }

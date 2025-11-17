@@ -63,17 +63,6 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
             .catch(() => toast.error("Não foi possível alterar a quantidade de produtos no banco de dados."))
     }
 
-    const handleFinishCart = async () => {
-        if (!auth.user) return window.location.href = '/login';
-
-        await axios.post('/api/order', { user: auth.user.id })
-            .then(() => {
-                localStorage.removeItem('cart');
-                window.location.href = '/profile/pedidos';
-            })
-            .catch(er => console.error(er.response));
-    }
-
     useEffect(() => {
         handleCart();
         getCart();
@@ -241,7 +230,7 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
                         <Button
                             className="bg-black w-full box-border hover:bg-black/90 transition-all text-white rounded-none h-14 p-4 cursor-pointer"
                             disabled={cart.length === 0}
-                            onClick={handleFinishCart}
+                            onClick={() => window.location.href = '/checkout'}
                         >
                             {loading ? (<img src="/public/loader.svg" width={20} height={20} />) : "Finalizar compra"}
                         </Button>

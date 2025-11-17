@@ -1,6 +1,5 @@
 import AuthenticatedSessionController from "@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController";
-import { logout } from "@/routes";
-import { Form } from "@inertiajs/react";
+import { router } from '@inertiajs/react';
 import { LogOut, PackageIcon, UserRound } from "lucide-react";
 
 type MenuProfileProps = {
@@ -12,6 +11,11 @@ type LinkProps = {
     href: string,
     icon: React.ReactNode
 }
+
+const handleLogout = () => {
+    localStorage.removeItem('cart');
+    router.post('/logout');
+};
 
 export default function MenuProfile({ className }: MenuProfileProps) {
     const url = window.location.pathname;
@@ -28,10 +32,6 @@ export default function MenuProfile({ className }: MenuProfileProps) {
             icon: (<PackageIcon />),
         },
     ];
-
-    const handleLogout = async () => {
-        await fetch('http://localhost:8000/logout', { method: 'POST' });
-    }
 
     return (
         <div
@@ -56,12 +56,13 @@ export default function MenuProfile({ className }: MenuProfileProps) {
                         })
                     ) : null
                 }
-                <Form className="hover:bg-white/5 cursor-pointer" {...AuthenticatedSessionController.destroy.form()}>
-                    <button className="flex gap-4 p-4 font-bold hover:text-red-500 cursor-pointer" type="submit">
-                        <LogOut/>
-                        Sair
-                    </button>
-                </Form>
+                <button
+                    className="flex gap-4 p-4 font-bold hover:text-red-500 cursor-pointer"
+                    onClick={handleLogout}
+                >
+                    <LogOut />
+                    Sair
+                </button>
             </ul>
         </div>
     )

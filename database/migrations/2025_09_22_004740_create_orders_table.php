@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('shipping_method', 30);
             $table->string('tracking_code', 30)->nullable();
             $table->string('status', 30)->default('Aguardando pagamento');
+            $table->foreignId('address_id')->constrained('addresses');
             $table->timestamps();
         });
 

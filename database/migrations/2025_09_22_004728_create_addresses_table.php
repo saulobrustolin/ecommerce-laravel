@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
+            $table->string('label', 50);
             $table->string('city', 60);
-            $table->integer('number');
+            $table->string('number', 10);
             $table->string('zipcode', 20);
             $table->string('street', 80);
             $table->string('state', 60);
-            $table->longText('obs');
+            $table->longText('obs')->nullable();
             $table->timestamps();
 
             $table->foreignId('user_id')->constrained('users');

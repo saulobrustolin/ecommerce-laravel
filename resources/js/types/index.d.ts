@@ -42,6 +42,12 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export type ImageProductOrderProps = {
+    id: number;
+    url: string;
+    product_id: number;
+}
+
 export type ProductOrderProps = {
     id: number;
     name: string;
@@ -62,7 +68,8 @@ export type ProductOrderProps = {
             id: number;
             name: string;
         }
-    }
+    },
+    image: ImageProductOrderProps[]
 }
 
 export type OrderProps = {
@@ -79,9 +86,14 @@ export type OrderProps = {
     shipping_method: string;
     tracking_code: string | null;
     status: string;
-    created_at: string | null;
-    updated_at: string | null;
+    created_at: string;
+    updated_at: string;
     product: ProductOrderProps[];
+    user: {
+        name: string;
+        id: number;
+    },
+    address: AddressProps;
 }
 
 export type ImageProps = {
@@ -142,4 +154,18 @@ export type CartProps = {
         short_description: string;
         image: ImageProps[]
     }
+}
+
+export type AddressProps = {
+    label: string;
+    id: number;
+    city: string;
+    number: number;
+    zipcode: string;
+    street: string;
+    obs: string | null;
+    created_at: string;
+    updated_at: string;
+    user_id: number;
+    state: string;
 }
