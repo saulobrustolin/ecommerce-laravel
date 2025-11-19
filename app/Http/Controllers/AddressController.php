@@ -27,9 +27,9 @@ class AddressController extends Controller
      */
     public function store(StoreAddressRequest $request)
     {
-        Address::create($request->all());
+        $address = Address::create($request->all());
 
-        return $request->all();
+        return $address;
     }
 
     /**

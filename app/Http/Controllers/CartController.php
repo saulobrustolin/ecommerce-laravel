@@ -20,7 +20,7 @@ class CartController extends Controller
         ->get()
         ->makeHidden(['user_id', 'product_id']);
 
-        return $cart;
+        return $products;
     }
 
     public function show($user)

@@ -11,6 +11,6 @@ interface AppDefaultProps {
 export default ({ children, sticky, className, ...props }: AppDefaultProps) => (
     <AppDefaultTemplate sticky={sticky} className={className} {...props}>
         {children}
-        <Toaster/>
+        <Toaster position='bottom-left' />
     </AppDefaultTemplate>
 );

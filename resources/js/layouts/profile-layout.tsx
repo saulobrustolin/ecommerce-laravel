@@ -24,7 +24,7 @@ export default function ProfileLayout({ children }: ProfileLayoutProps) {
                     </main>
                 </div>
             </div>
-            <Toaster />
+            <Toaster position='bottom-left' />
         </>
     )
 }

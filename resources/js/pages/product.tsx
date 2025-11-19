@@ -70,8 +70,8 @@ export default function Product({ id }: { id: string }) {
                 if (!cartLocal) return localStorage.setItem('cart', JSON.stringify(api ? [api] : [data]));
     
                 const cart = JSON.parse(cartLocal);
-                console.log(cart)
                 cart.push(api ?? data)
+                console.log(api, data)
     
                 localStorage.setItem('cart', JSON.stringify(cart));
             } finally {
@@ -90,7 +90,7 @@ export default function Product({ id }: { id: string }) {
             color_id: cor
         })
             .then(v => {
-                addingCart(v.data)
+                addingCart(v.data[0])
             })
             .catch(() => toast.error("Não foi possível adicionar este produto ao carrinho."));
     }

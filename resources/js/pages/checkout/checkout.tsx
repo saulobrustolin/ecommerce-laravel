@@ -43,6 +43,7 @@ export default function Checkout() {
 
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries());
+        if (!data.number) data.number = 'S/N';
 
         setLoading(true);
         await axios.post(`/api/address/`, { ...data, user_id: auth.user.id })
@@ -93,15 +94,15 @@ export default function Checkout() {
                     </div>
                     <div>
                         <Label>Cidade</Label>
-                        <Input placeholder="São Paulo" name="city" required />
+                        <Input pattern="[a-zA-Z]{5,}" placeholder="São Paulo" name="city" required />
                     </div>
                     <div>
                         <Label>Número</Label>
-                        <Input placeholder="S/N" name="number" />
+                        <Input pattern='[0-9]' placeholder="S/N" name="number" />
                     </div>
                     <div>
                         <Label>CEP</Label>
-                        <Input placeholder="99900-000" name="zipcode" required />
+                        <Input pattern="\d{5}-\d{3}" placeholder="99900-000" name="zipcode" required />
                     </div>
                     <div>
                         <Label>Rua</Label>
@@ -109,7 +110,7 @@ export default function Checkout() {
                     </div>
                     <div>
                         <Label>Estado</Label>
-                        <Input placeholder="PB" name="state" required />
+                        <Input pattern="[A-Z]{2}" placeholder="PB" name="state" required />
                     </div>
                     <div>
                         <Label>Observações</Label>

@@ -113,6 +113,7 @@ export default function Cart({ setOpenCart }: CartOpenProps) {
                                     {
                                         cart && cart.length !== 0 ? (
                                             cart.map((c: CartProps, indexProduct: number) => {
+                                                console.log(c)
                                                 return (
                                                     <li
                                                         key={`${c.size_id}-${indexProduct}-${c.id}`}
