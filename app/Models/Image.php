@@ -14,8 +14,8 @@ class Image extends Model
     /** @use HasFactory<\Database\Factories\ImageFactory> */
     use HasFactory;
 
-    public function review(): HasMany {
-        return $this->hasMany(Review::class);
+    public function review(): BelongsTo {
+        return $this->belongsTo(Review::class);
     }
 
     public function product(): BelongsTo {

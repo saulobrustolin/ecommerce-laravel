@@ -22,4 +22,8 @@ class Review extends Model
     public function user(): HasMany {
         return $this->hasMany(User::class);
     }
+
+    public function image(): HasMany {
+        return $this->hasMany(User::class);
+    }
 }

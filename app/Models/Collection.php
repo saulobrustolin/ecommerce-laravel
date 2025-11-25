@@ -15,7 +15,7 @@ class Collection extends Model
 
     protected $fillable = ['name'];
     
-    public function products(): BelongsToMany {
+    public function product(): BelongsToMany {
         return $this->belongsToMany(Product::class)
             ->withPivot('status')
             ->withTimestamps();

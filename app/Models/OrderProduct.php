@@ -9,6 +9,7 @@ use App\Models\Colors;
 use App\Models\Sizes;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderProduct extends Pivot
 {
@@ -16,12 +17,12 @@ class OrderProduct extends Pivot
 
     protected $table = 'order_product';
 
-    public function size()
+    public function size(): BelongsTo
     {
         return $this->belongsTo(Sizes::class, 'size_id');
     }
 
-    public function color()
+    public function color(): BelongsTo
     {
         return $this->belongsTo(Colors::class, 'color_id');
     }

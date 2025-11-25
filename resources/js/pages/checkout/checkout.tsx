@@ -22,7 +22,6 @@ export default function Checkout() {
         setLoading(true);
         await axios.get(`/api/address/?user=${auth.user.id}`)
             .then(r => {
-                console.log(r.data);
                 setAddress(r.data);
                 setSelected(r.data[0]);
             })
@@ -97,15 +96,15 @@ export default function Checkout() {
                     </div>
                     <div>
                         <Label>Cidade</Label>
-                        <Input pattern="[a-zA-Z]{5,}" placeholder="São Paulo" name="city" required />
+                        <Input pattern="^[a-zA-Z ]{5,}$" placeholder="São Paulo" name="city" required />
                     </div>
                     <div>
                         <Label>Número</Label>
-                        <Input pattern='[0-9]' placeholder="S/N" name="number" />
+                        <Input pattern='^(?:\d+|S\/N)?$' placeholder="S/N" name="number" />
                     </div>
                     <div>
                         <Label>CEP</Label>
-                        <Input pattern="\d{5}-\d{3}" placeholder="99900-000" name="zipcode" required />
+                        <Input pattern="\d{8}" placeholder="99900-000" name="zipcode" required />
                     </div>
                     <div>
                         <Label>Rua</Label>

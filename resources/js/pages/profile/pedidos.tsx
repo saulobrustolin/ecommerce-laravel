@@ -26,7 +26,10 @@ export default function Pedidos() {
         setLoading(true);
         await axios.get(`/api/order/${auth.user.id}`)
             .then(r => setOrders(r.data))
-            .catch(() => toast.error('Algo de errado aconteceu durante a tentativa de recuperar seus pedidos. Tente novamente mais tarde...'))
+            .catch(err => {
+                toast.error('Algo de errado aconteceu durante a tentativa de recuperar seus pedidos. Tente novamente mais tarde...');
+                console.log(err)
+            })
             .finally(() => setLoading(false))
     }
 

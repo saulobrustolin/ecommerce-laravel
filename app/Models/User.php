@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
 use App\Models\Order;
+use App\Models\User;
 
 class User extends Authenticatable
 {
@@ -57,5 +58,9 @@ class User extends Authenticatable
 
     public function cart(): HasMany {
         return $this->hasMany(Cart::class);
+    }
+
+    public function address(): HasMany {
+        return $this->hasMany(User::class);
     }
 }

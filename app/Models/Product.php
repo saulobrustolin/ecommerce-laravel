@@ -22,35 +22,42 @@ class Product extends Model
     
     protected $fillable = ['name', 'available', 'short_description', 'description', 'price'];
 
-    public function order(): BelongsToMany {
-        return $this->belongsToMany(Order::class)
+    public function order(): BelongsToMany 
+    {
+        return $this->belongsToMany(Order::class, 'order_product')
             ->withPivot('price_unit', 'subtotal', 'quantity')
             ->withTimestamps();
     }
 
-    public function collection(): BelongsToMany {
+    public function collection(): BelongsToMany 
+    {
         return $this->belongsToMany(Collection::class)
             ->withPivot('status')
             ->withTimestamps();
     }
 
-    public function color(): HasMany {
+    public function color(): HasMany 
+    {
         return $this->hasMany(Colors::class);
     }
 
-    public function size(): HasMany {
+    public function size(): HasMany 
+    {
         return $this->hasMany(Sizes::class);
     }
 
-    public function image(): HasMany {
+    public function image(): HasMany 
+    {
         return $this->hasMany(Image::class);
     }
 
-    public function review(): HasMany {
+    public function review(): HasMany 
+    {
         return $this->hasMany(Review::class);
     }
 
-    public function cart(): HasMany {
+    public function cart(): HasMany 
+    {
         return $this->hasMany(Cart::class);
     }
 }

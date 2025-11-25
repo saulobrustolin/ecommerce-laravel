@@ -26,7 +26,8 @@ class ProductController extends Controller
         )->with([
             'image:id,url,product_id',
             'size:id,name,product_id',
-            'color:id,name,color,product_id'
+            'color:id,name,color,product_id',
+            'review:id,describe,star,product_id'
         ])
         ->withCount(['review as total_reviews'])
         ->withAvg('review', 'star')
@@ -68,12 +69,14 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $product->update($request->all());
+
         return ["message" => "Êxito ao atualizar o produto."];
     }
 
     public function destroy(Product $product)
     {
         $product->delete();
+        
         return ['mensagem' => 'Êxito ao remover produto.'];
     }
 }

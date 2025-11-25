@@ -21,19 +21,23 @@ class Cart extends Model
     protected $table = 'carts';
     protected $fillable = ['quantity', 'product_id', 'user_id', 'size_id', 'color_id'];
 
-    public function product(): BelongsTo {
+    public function product(): BelongsTo 
+    {
         return $this->belongsTo(Product::class);
     }
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo 
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function size(): BelongsTo {
+    public function size(): BelongsTo 
+    {
         return $this->belongsTo(Sizes::class);
     }
 
-    public function color(): BelongsTo {
+    public function color(): BelongsTo 
+    {
         return $this->belongsTo(Colors::class);
     }
 }
