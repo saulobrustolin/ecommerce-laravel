@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import ProfileLayout from "@/layouts/profile-layout";
 import { AddressProps, OrderProps, ProductOrderProps, SharedData } from "@/types";
 import { usePage } from "@inertiajs/react";
@@ -124,7 +123,6 @@ export default function Pedidos() {
     }
 
     if (order) {
-        console.log(order)
         return (
             <ProfileLayout>
                 <div className="flex justify-between">

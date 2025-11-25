@@ -74,7 +74,10 @@ export default function Checkout() {
                 localStorage.removeItem('cart');
                 window.location.href = '/profile/pedidos';
             })
-            .catch(() => toast.error('Algo de errado aconteceu durante a tentativa de criar o pedido.'))
+            .catch(err => {
+                console.log(err)
+                toast.error('Algo de errado aconteceu durante a tentativa de criar o pedido.');
+            })
             .finally(() => setLoading(false));
     }
 
