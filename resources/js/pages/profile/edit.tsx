@@ -4,7 +4,8 @@ import { Label } from "@/components/ui/label";
 import ProfileLayout from "@/layouts/profile-layout";
 import { SharedData } from "@/types";
 import { usePage } from "@inertiajs/react";
-import { CircleCheck, CircleX, LoaderCircle } from "lucide-react";
+import axios from "axios";
+import { LoaderCircle } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "sonner";
 
@@ -14,6 +15,9 @@ export default function ProfileEdit() {
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
 
+    const [password, setPassword] = useState<string>('');
+    const [newPassword, setNewPassword] = useState<string>('');
+
     const { auth } = usePage<SharedData>().props;
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -21,39 +25,21 @@ export default function ProfileEdit() {
 
         setLoading(prev => !prev);
 
-        const object: { name?: string, email?: string } = {};
+        const form = new FormData(e.currentTarget);
+        const object = Object.fromEntries(form.entries());
 
-        name ? object.name = name : null;
-        email ? object.email = email : null;
+        await axios.patch(`/api/user/${auth.user.id}`, object)
+        .then(res => {
+            toast.success(res.data.mensagem);
 
-        try {
-            const options = {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(object)
-            }
-
-            const response = await fetch('/api/user/' + auth.user.id, options);
-            const json = await response.json();
-            console.log(options.body)
-            if (response.ok) {
-                toast('Sucesso ao editar suas informações!', { icon: <CircleCheck className="text-lime-500 size-5 mr-2" /> })
-                console.log(json)
-                setLoading(prev => !prev)
-                return
-            } else {
-                console.log(json)
-                toast('Não foi possível editar seus dados, tente novamente mais tarde!', { icon: <CircleX className="text-red-500 size-5 mr-2" /> })
-                setLoading(prev => !prev)
-                return
-            }
-        } catch {
-            toast('Não foi possível editar seus dados, tente novamente mais tarde!', { icon: <CircleX className="text-red-500 size-5 mr-2" /> })
-            setLoading(prev => !prev)
-        }
+            setTimeout(() => {
+                window.location.href = '/profile';
+            }, 1000)
+        })
+        .catch(err => {
+            toast.error(err.response.data.erro);
+        })
+        .finally(() => setLoading(false));
     }
     
     return (
@@ -71,6 +57,7 @@ export default function ProfileEdit() {
                         className="w-full"
                         disabled={loading}
                         defaultValue={name}
+                        name="name"
                         onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.target.value.trim())}
                     />
                 </div>
@@ -81,9 +68,39 @@ export default function ProfileEdit() {
                     <Input
                         placeholder="digite seu novo e-mail..."
                         className="w-full"
+                        type="email"
                         disabled={loading}
                         defaultValue={email}
+                        name="email"
                         onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value.trim())}
+                    />
+                </div>
+                <div
+                    className="w-full"
+                >
+                    <Label>Sua senha</Label>
+                    <Input
+                        placeholder="digite sua senha atual..."
+                        className="w-full"
+                        type="password"
+                        disabled={loading}
+                        defaultValue={password}
+                        name="password"
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.target.value.trim())}
+                    />
+                </div>
+                <div
+                    className="w-full"
+                >
+                    <Label>Sua nova senha</Label>
+                    <Input
+                        type="password"
+                        placeholder="digite sua nova senha..."
+                        className="w-full"
+                        disabled={loading}
+                        defaultValue={newPassword}
+                        name="newpassword"
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => setNewPassword(event.target.value.trim())}
                     />
                 </div>
                 <Button

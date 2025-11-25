@@ -70,10 +70,11 @@ export default function Product({ id }: { id: string }) {
                 if (!cartLocal) return localStorage.setItem('cart', JSON.stringify(api ? [api] : [data]));
     
                 const cart = JSON.parse(cartLocal);
-                cart.push(api ?? data)
-                console.log(api, data)
+                cart.push(api ?? data);
     
                 localStorage.setItem('cart', JSON.stringify(cart));
+
+                toast.success('Sucesso ao adicionar produto no carrinho!')
             } finally {
                 setSuccess(true);
                 setTimeout(() => {

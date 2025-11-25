@@ -6,7 +6,7 @@ export default function CheckoutLayout({ children }: { children: ReactNode }) {
         <main className="md:w-[768px] lg:w-[1024px] justify-self-center h-screen place-content-center space-y-12">
             <img src="/logo-white.svg" alt="Logo da loja" className="h-6 justify-self-center" />
             {children}
-            <Toaster/>
+            <Toaster position="bottom-left"/>
         </main>
     )
 }

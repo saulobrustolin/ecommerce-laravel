@@ -58,6 +58,7 @@ export default function Search() {
         handleProducts();
     }, [])
     useEffect(() => {
+        setProducts(prev => prev ? (prev.filter(a => a.name.includes(search))) : null);
         handleProducts();
     }, [search])
     useEffect(() => {

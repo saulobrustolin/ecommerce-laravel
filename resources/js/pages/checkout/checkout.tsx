@@ -74,11 +74,9 @@ export default function Checkout() {
                 localStorage.removeItem('cart');
                 window.location.href = '/profile/pedidos';
             })
-            .catch(err => {
-                console.log(err)
+            .catch(() => {
                 toast.error('Algo de errado aconteceu durante a tentativa de criar o pedido.');
             })
-            .finally(() => setLoading(false));
     }
 
     if (loading) {

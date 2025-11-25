@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Http\Request;
 
@@ -41,9 +42,28 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user->update($request->all());
+        $password = $request->get('password');
+        $newpassword = $request->get('newpassword');
 
-        return ['response' => 'Sucesso ao atualizar perfil.', 'request' => $request->all()];
+        if (Hash::check($newpassword, $user->password)) {
+            return response()->json([
+                'erro' => 'As senhas não podem ser igual.'
+            ], 400);
+        }
+
+        if (! Hash::check($password, $user->password)) {
+            return response()->json([
+                'erro' => 'A senha atual não corresponse a senha de sua conta.'
+            ], 400);
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($newpassword)
+        ]);
+
+        return ['mensagem' => 'Perfil atualizado com sucesso.'];
     }
 
     /**

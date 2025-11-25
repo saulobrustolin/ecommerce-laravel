@@ -14,11 +14,11 @@ class Favorite extends Model
     /** @use HasFactory<\Database\Factories\FavoriteFactory> */
     use HasFactory;
 
-    public function users(): HasMany {
+    public function user(): HasMany {
         return $this->hasMany(User::class);
     }
 
-    public function slugs(): HasMany {
+    public function slug(): HasMany {
         return $this->hasMany(Slugs::class);
     }
 }
