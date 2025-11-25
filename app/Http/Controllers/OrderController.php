@@ -45,7 +45,14 @@ class OrderController extends Controller
         $user = $request->get('user');
         $address = $request->get('address');
 
-        $r = DB::select('SELECT transformarPedido(:user, :address)', [$user, $address]);
+        if (! $user || ! $address) {
+            throw ValidationException::withMessages([
+                'user' => 'O usuário é obrigatório.',
+                'address' => 'O endereço é obrigatório.'
+            ]);
+        }
+
+        $r = DB::select('SELECT criarPedido(:user, :address)', [$user, $address]);
 
         return $r;
     }

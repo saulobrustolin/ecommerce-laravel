@@ -7,7 +7,7 @@ import { usePage } from "@inertiajs/react";
 import axios from "axios";
 import { MoveLeft, Plus, SquarePen } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import Swal from 'sweetalert2'
 
 export default function Pedidos() {
@@ -54,6 +54,7 @@ export default function Pedidos() {
                 toast.success('Pedido cancelado com sucesso!');
             })
             .catch(r => toast.error(r.response.data.erro))
+            .finally(() => setLoading(false));
     }
 
     const handleChangeAddress = async (e: FormEvent<HTMLFormElement>) => {

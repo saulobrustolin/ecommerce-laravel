@@ -2,53 +2,18 @@ import ProductCollection from "@/components/product-collection";
 import AppLayout from "@/layouts/app-layout";
 import { ProductProps } from "@/types";
 import axios from "axios";
-import { Ban, Undo2 } from "lucide-react";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { Undo2 } from "lucide-react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-function useVisibilityProgress(options = {}) {
-    const ref = useRef(null);
-    const [progress, setProgress] = useState(0);
-
-    useEffect(() => {
-        if (!ref.current) return;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    const visibleHeight = entry.intersectionRect.height;
-                    const totalHeight = entry.boundingClientRect.height;
-
-                    const percent = Math.min(
-                        100,
-                        Math.max(0, (visibleHeight / totalHeight) * 100)
-                    );
-
-                    setProgress(percent);
-                });
-            },
-            {
-                threshold: Array.from({ length: 100 }, (_, i) => i / 100),
-                ...options
-            }
-        );
-
-        observer.observe(ref.current);
-
-        return () => observer.disconnect();
-    }, []);
-
-    return { ref, progress };
-}
-
 export default function Search() {
+    const [loading, setLoading] = useState<boolean>(true);
     const [products, setProducts] = useState<ProductProps[] | null>(null);
     const [search, setSearch] = useState<string>('');
     const [page, setPage] = useState<number>(1);
 
-    const { ref, progress } = useVisibilityProgress();
-
     const handleProducts = async () => {
+        setLoading(true);
         await axios.get('/api/product', {
             headers: {
                 'Content-Type': 'application/json',
@@ -59,9 +24,35 @@ export default function Search() {
                 page
             }
         })
-            .then(r => setProducts(r.data.data))
+            .then(r => {
+                if (r.data.data.length === 0) return
+
+                setProducts(prev => prev ? [...prev, ...r.data.data] : r.data.data);
+            })
             .catch(() => toast.error('Não foi possível capturar os produtos no banco de dados, tente novamente mais tarde...'))
-    }
+            .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const fullHeight = Math.max(
+                document.body.scrollHeight,
+                document.documentElement.scrollHeight
+            );
+
+            const percentual = (window.scrollY / (fullHeight - window.innerHeight)) * 100;
+
+            if (percentual >= 80 && !loading) {
+                setPage(prev => prev + 1);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, [loading]);
 
     useEffect(() => {
         handleProducts();
@@ -69,10 +60,11 @@ export default function Search() {
     useEffect(() => {
         handleProducts();
     }, [search])
-
     useEffect(() => {
-        console.log(progress)
-    }, [progress])
+        if (page == 1) return
+
+        handleProducts();
+    }, [page])
 
     return (
         <AppLayout
@@ -83,7 +75,6 @@ export default function Search() {
             >
                 <div
                     className="flex justify-between items-center mb-8"
-                    ref={ref}
                 >
                     <a
                         href="/"
@@ -107,11 +98,11 @@ export default function Search() {
                 >
                     {
                         products && products.length !== 0 ? (
-                            products.map((product: ProductProps) => {
+                            products.map((product: ProductProps, index: number) => {
                                 return (
                                     <ProductCollection
                                         product={product}
-                                        key={product.id}
+                                        key={`${product.id}-${index}`}
                                     />
                                 )
                             })

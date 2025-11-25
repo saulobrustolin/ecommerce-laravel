@@ -22,6 +22,7 @@ export default function Checkout() {
         setLoading(true);
         await axios.get(`/api/address/?user=${auth.user.id}`)
             .then(r => {
+                console.log(r.data);
                 setAddress(r.data);
                 setSelected(r.data[0]);
             })
@@ -63,17 +64,18 @@ export default function Checkout() {
             return
         }
 
+        setLoading(true);
         await axios.post('/api/order/', {
             user: auth.user.id,
             address: selected.id
         })
             .then(() => {
                 toast.success('Pedido criado com sucesso.');
-                setTimeout(() => {
-                    window.location.href = '/profile/pedidos';
-                }, 1000)
+                localStorage.removeItem('cart');
+                window.location.href = '/profile/pedidos';
             })
             .catch(() => toast.error('Algo de errado aconteceu durante a tentativa de criar o pedido.'))
+            .finally(() => setLoading(false));
     }
 
     if (loading) {

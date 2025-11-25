@@ -17,7 +17,7 @@ class AddressController extends Controller
     {
         $user = $request->get('user');
 
-        $addresses = Address::where('user_id', '=', $user)->get();
+        $addresses = Address::where('user_id', $user)->get();
 
         return $addresses;
     }
