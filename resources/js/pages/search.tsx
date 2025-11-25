@@ -1,7 +1,7 @@
 import ProductCollection from "@/components/product-collection";
 import AppLayout from "@/layouts/app-layout";
 import { ProductProps } from "@/types";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Undo2 } from "lucide-react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -27,45 +27,20 @@ export default function Search() {
             .then(r => {
                 if (r.data.data.length === 0) return
 
-                setProducts(prev => prev ? [...prev, ...r.data.data] : r.data.data);
+                setProducts(r.data.data);
+
+                return r.data;
             })
             .catch(() => toast.error('Não foi possível capturar os produtos no banco de dados, tente novamente mais tarde...'))
             .finally(() => setLoading(false));
     };
 
     useEffect(() => {
-        const handleScroll = () => {
-            const fullHeight = Math.max(
-                document.body.scrollHeight,
-                document.documentElement.scrollHeight
-            );
-
-            const percentual = (window.scrollY / (fullHeight - window.innerHeight)) * 100;
-
-            if (percentual >= 80 && !loading) {
-                setPage(prev => prev + 1);
-            }
-        };
-
-        window.addEventListener("scroll", handleScroll);
-
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, [loading]);
-
-    useEffect(() => {
         handleProducts();
     }, [])
     useEffect(() => {
-        setProducts(prev => prev ? (prev.filter(a => a.name.includes(search))) : null);
         handleProducts();
     }, [search])
-    useEffect(() => {
-        if (page == 1) return
-
-        handleProducts();
-    }, [page])
 
     return (
         <AppLayout
